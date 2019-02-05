@@ -1,0 +1,25 @@
+--cpu Cortex-M0
+"cfoc_esc_fw\startup_stm32f070x6.o"
+"cfoc_esc_fw\main.o"
+"cfoc_esc_fw\gpio.o"
+"cfoc_esc_fw\adc.o"
+"cfoc_esc_fw\dma.o"
+"cfoc_esc_fw\i2c.o"
+"cfoc_esc_fw\tim.o"
+"cfoc_esc_fw\usart.o"
+"cfoc_esc_fw\stm32f0xx_it.o"
+"cfoc_esc_fw\stm32f0xx_ll_gpio.o"
+"cfoc_esc_fw\stm32f0xx_ll_adc.o"
+"cfoc_esc_fw\stm32f0xx_ll_dma.o"
+"cfoc_esc_fw\stm32f0xx_ll_i2c.o"
+"cfoc_esc_fw\stm32f0xx_ll_pwr.o"
+"cfoc_esc_fw\stm32f0xx_ll_exti.o"
+"cfoc_esc_fw\stm32f0xx_ll_tim.o"
+"cfoc_esc_fw\stm32f0xx_ll_usart.o"
+"cfoc_esc_fw\stm32f0xx_ll_rcc.o"
+"cfoc_esc_fw\stm32f0xx_ll_utils.o"
+"cfoc_esc_fw\system_stm32f0xx.o"
+--library_type=microlib --strict --scatter "cFOC_ESC_FW\cFOC_ESC_FW.sct"
+--summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
+--info sizes --info totals --info unused --info veneers
+--list "cFOC_ESC_FW.map" -o cFOC_ESC_FW\cFOC_ESC_FW.axf
