@@ -2,7 +2,7 @@ cfoc_esc_fw\system_stm32f0xx.o: ..//Src/system_stm32f0xx.c
 cfoc_esc_fw\system_stm32f0xx.o: ../Drivers/CMSIS/Device/ST/STM32F0xx/Include/stm32f0xx.h
 cfoc_esc_fw\system_stm32f0xx.o: ../Drivers/CMSIS/Device/ST/STM32F0xx/Include/stm32f070x6.h
 cfoc_esc_fw\system_stm32f0xx.o: ../Drivers/CMSIS/Include/core_cm0.h
-cfoc_esc_fw\system_stm32f0xx.o: D:\apps\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+cfoc_esc_fw\system_stm32f0xx.o: F:\prgrms\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 cfoc_esc_fw\system_stm32f0xx.o: ../Drivers/CMSIS/Include/core_cmInstr.h
 cfoc_esc_fw\system_stm32f0xx.o: ../Drivers/CMSIS/Include/cmsis_armcc.h
 cfoc_esc_fw\system_stm32f0xx.o: ../Drivers/CMSIS/Include/core_cmFunc.h

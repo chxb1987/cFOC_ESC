@@ -35,6 +35,9 @@
 #include "stm32f0xx_it.h"
 
 /* USER CODE BEGIN 0 */
+void newSample_callback(void);
+void txCmplt_callback(void);
+void rxCmplt_callback(void);
 
 /* USER CODE END 0 */
 
@@ -129,18 +132,23 @@ void DMA1_Channel1_IRQHandler(void)
 {
   /* USER CODE BEGIN DMA1_Channel1_IRQn 0 */
 	
-	LL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
 	
-	
-	/* --------------------------------------------------------------- */
 	/* Check whether DMA transfer complete caused the DMA interruption */
-  if(LL_DMA_IsActiveFlag_TC1(DMA1) == 1) { LL_DMA_ClearFlag_TC1(DMA1); }
+  if(LL_DMA_IsActiveFlag_TC1(DMA1) == 1) {
+  	LL_DMA_ClearFlag_TC1(DMA1);
+    newSample_callback();
+	}
   
-  /* Check whether DMA half transfer caused the DMA interruption */
-  if(LL_DMA_IsActiveFlag_HT1(DMA1) == 1) { LL_DMA_ClearFlag_HT1(DMA1); }
+//  /* Check whether DMA half transfer caused the DMA interruption */
+//  if(LL_DMA_IsActiveFlag_HT1(DMA1) == 1) { LL_DMA_ClearFlag_HT1(DMA1); }
+//  
+//  /* Check whether DMA transfer error caused the DMA interruption */
+//  if(LL_DMA_IsActiveFlag_TE1(DMA1) == 1) { LL_DMA_ClearFlag_TE1(DMA1); }
   
-  /* Check whether DMA transfer error caused the DMA interruption */
-  if(LL_DMA_IsActiveFlag_TE1(DMA1) == 1) { LL_DMA_ClearFlag_TE1(DMA1); }
+  /* --------------------------------------------------------------- */
+  
+  //LL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+	LL_DMA_ClearFlag_GI1(DMA1);
 
   /* USER CODE END DMA1_Channel1_IRQn 0 */
   
@@ -155,6 +163,19 @@ void DMA1_Channel1_IRQHandler(void)
 void DMA1_Channel4_5_IRQHandler(void)
 {
   /* USER CODE BEGIN DMA1_Channel4_5_IRQn 0 */
+	
+	/* Check whether DMA transfer complete caused the DMA interruption */
+	if(LL_DMA_IsActiveFlag_TC4(DMA1))
+  {
+    LL_DMA_ClearFlag_GI4(DMA1);
+    //txCmplt_callback();
+  }
+  else if(LL_DMA_IsActiveFlag_TC5(DMA1))
+  {
+	  LL_DMA_ClearFlag_GI5(DMA1);
+    //rxCmplt_callback();
+	}
+	
 
   /* USER CODE END DMA1_Channel4_5_IRQn 0 */
   
