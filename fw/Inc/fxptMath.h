@@ -1,8 +1,10 @@
 #include "main.h"
 #include "stdint.h"
 
-#define _HI(x) (uint16_t)((x)>>8)      // запись в старший байт
-#define _LO(x) (uint16_t)((x)& 0xFF)   // запись в младший байт
+#define _HI(x) (uint16_t) ( (x) >> 8 )      // запись в старший байт
+#define _LO(x) (uint16_t) ( (x) & 0xFF )            // запись в младший байт
+#define _HI16(x) (uint16_t) ( (x) >> 16 )      // запись в старший байт
+#define _LO16(x) (uint16_t) ( (x) & 0xFFFF )            // запись в младший байт
 
 typedef volatile int32_t _iq;
 
@@ -119,6 +121,16 @@ typedef volatile int32_t _iq;
 _iq _IQsin(_iq VAR);
 
 inline _iq _IQsin(_iq VAR){
+    VAR = VAR > _IQ(M_PI2) ? -VAR + _IQ(M_PI)
+        : VAR < -_IQ(M_PI2) ? -VAR - _IQ(M_PI) : VAR;
+    VAR = _IQmpy(VAR, (_IQ(0.98557) - _IQmpy(VAR, _IQmpy(VAR, _IQ(0.142595)))));
+	return VAR;
+}
+
+_iq _IQsinPU(_iq VAR);
+
+inline _iq _IQsinPU(_iq VAR){
+		VAR *= _IQ(M_PI);
     VAR = VAR > _IQ(M_PI2) ? -VAR + _IQ(M_PI)
         : VAR < -_IQ(M_PI2) ? -VAR - _IQ(M_PI) : VAR;
     VAR = _IQmpy(VAR, (_IQ(0.98557) - _IQmpy(VAR, _IQmpy(VAR, _IQ(0.142595)))));

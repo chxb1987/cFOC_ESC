@@ -1,5 +1,8 @@
 --cpu Cortex-M0
 "cfoc_esc_fw\startup_stm32f070x6.o"
+"cfoc_esc_fw\bdcm.o"
+"cfoc_esc_fw\bdcm_const.o"
+"cfoc_esc_fw\pi_reg.o"
 "cfoc_esc_fw\main.o"
 "cfoc_esc_fw\gpio.o"
 "cfoc_esc_fw\adc.o"

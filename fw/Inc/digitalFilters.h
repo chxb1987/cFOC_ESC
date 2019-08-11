@@ -6,9 +6,10 @@ typedef struct {
 	_iq y;
 	_iq kx0;
 	_iq ky1;
-	_iq Tf;
-  _iq Ts;
+	_iq Tf;					// ( 1 / cutoff_frequency )
+  _iq Ts;					// Sampling time
 } FILTER_DATA;
+
 #define FILTER_DEFAULTS { 0, 0, 0, 0, \
 													_IQ(10),_IQ(10) }
 

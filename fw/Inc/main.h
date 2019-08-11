@@ -58,7 +58,7 @@
 #include "stm32f0xx_ll_gpio.h"
 
 /* USER CODE BEGIN Includes */
-//#include "uIQMath.h"
+
 /* USER CODE END Includes */
 
 /* Private define ------------------------------------------------------------*/

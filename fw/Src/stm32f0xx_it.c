@@ -39,6 +39,8 @@ void newSample_callback(void);
 void txCmplt_callback(void);
 void rxCmplt_callback(void);
 
+//extern uint32_t adcData[];
+
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
@@ -131,25 +133,13 @@ void SysTick_Handler(void)
 void DMA1_Channel1_IRQHandler(void)
 {
   /* USER CODE BEGIN DMA1_Channel1_IRQn 0 */
-	
-	
-	/* Check whether DMA transfer complete caused the DMA interruption */
-  if(LL_DMA_IsActiveFlag_TC1(DMA1) == 1) {
-  	LL_DMA_ClearFlag_TC1(DMA1);
-    newSample_callback();
+	if(LL_DMA_IsActiveFlag_TC1(DMA1))
+  {
+    LL_DMA_ClearFlag_TC1(DMA1);
+		newSample_callback();
 	}
-  
-//  /* Check whether DMA half transfer caused the DMA interruption */
-//  if(LL_DMA_IsActiveFlag_HT1(DMA1) == 1) { LL_DMA_ClearFlag_HT1(DMA1); }
-//  
-//  /* Check whether DMA transfer error caused the DMA interruption */
-//  if(LL_DMA_IsActiveFlag_TE1(DMA1) == 1) { LL_DMA_ClearFlag_TE1(DMA1); }
-  
-  /* --------------------------------------------------------------- */
-  
-  //LL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+	LL_DMA_ClearFlag_HT1(DMA1);
 	LL_DMA_ClearFlag_GI1(DMA1);
-
   /* USER CODE END DMA1_Channel1_IRQn 0 */
   
   /* USER CODE BEGIN DMA1_Channel1_IRQn 1 */
@@ -191,14 +181,22 @@ void ADC1_IRQHandler(void)
 {
   /* USER CODE BEGIN ADC1_IRQn 0 */
 	/* Check whether DMA transfer complete caused the DMA interruption */
+//	static uint8_t adcConvCount = 0;
   if(LL_ADC_IsActiveFlag_EOC(ADC1) == 1)
   {
     LL_ADC_ClearFlag_EOC(ADC1);
+		//adcData[adcConvCount] = LL_ADC_REG_ReadConversionData12(ADC1);
+		//adcConvCount++;
   }
 	
 	if(LL_ADC_IsActiveFlag_EOS(ADC1) == 1)
   {
     LL_ADC_ClearFlag_EOS(ADC1);
+//		if(adcConvCount >= 3)
+//		{
+//			adcConvCount = 0;
+//			newSample_callback();
+//		}
   }
 	//LL_GPIO_ResetOutputPin(POWER_STAGE_EN_GPIO_Port, POWER_STAGE_EN_Pin);
   /* USER CODE END ADC1_IRQn 0 */
@@ -218,12 +216,10 @@ void TIM3_IRQHandler(void)
     LL_TIM_ClearFlag_UPDATE(TIM3);
   }
 	
-	if(LL_TIM_IsActiveFlag_UPDATE(TIM3) == 1)
+	if(LL_TIM_IsActiveFlag_CC3(TIM3) == 1)
   {
     LL_TIM_ClearFlag_CC3(TIM3);
   }
-	//LL_GPIO_SetOutputPin(LED_GPIO_Port, LED_Pin);
-	//LL_GPIO_SetOutputPin(POWER_STAGE_EN_GPIO_Port, POWER_STAGE_EN_Pin);
 
   /* USER CODE END TIM3_IRQn 0 */
   /* USER CODE BEGIN TIM3_IRQn 1 */

@@ -50,15 +50,22 @@
 //#include "EventRecorder.h"
 #include "cordicTrig.h"
 #include "digitalFilters.h"
+// определение параметров ДПТ
+#include "parameter.h"
+#include "bdcm.h"
+#include "bdcm_const.h"
+#include "pi_reg.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
+#define UART_SPEED 115200
+
 #define ADC_DATA_BUFF_SIZE 		3
 #define TX_BUFF_SIZE 					10
-#define STREAM_DBG_SIZE 			(uint8_t) 255
+#define STREAM_DBG_SIZE 			255
 
 #define F_SMP 								(48000000.0f / 2048.0f)
 #define T_S 									(1.0f / F_SMP)
@@ -80,9 +87,9 @@ typedef struct{
 	volatile uint8_t F:1;
 	volatile uint8_t G:1;
 	volatile uint8_t H:1;
-} Flags_t;
+} dataLogFlags_t;
 
-Flags_t status;
+dataLogFlags_t dataLog;
 
 volatile uint16_t streamCh1[STREAM_DBG_SIZE];
 volatile uint16_t streamCh2[STREAM_DBG_SIZE];
@@ -90,6 +97,7 @@ volatile uint16_t streamCh3[STREAM_DBG_SIZE];
 volatile uint16_t streamCh4[STREAM_DBG_SIZE];
 
 volatile uint8_t frameCount = 0;
+volatile uint8_t dataPacketCount = 0;
 
 volatile _iq qSin, qCos;
 
@@ -100,9 +108,23 @@ volatile _iq harmInj1 = _IQ(56.0);										// Injected harmonic frequency (rela
 volatile _iq hmScale0 = _IQ(0.2);											// Injected harmonic magnitude (relative of base)
 volatile _iq hmScale1 = _IQ(0.15);										// Injected harmonic magnitude (relative of base)
 
+// Глобальные переменные используемые в этой системе
+float U_e_ref = 1;         /* Задание напряжения обмотки возбуждения (о.е) */
+float U_a_ref = 1;         /* Задание напряжения обмотки якоря (о.е) */
+float Mc_ref= 0;           /* Задание момента сопротивления (о.е) */
+float Ia_ref = 1;          /* Задание тока якоря для ПИ регулятора (о.е) */
+float speed_ref = 0.5;     /* Задание скорости для регулятора скорости (о.е) */
+
+/* Digital LPF Init */
 FILTER_DATA lpf1 = FILTER_DEFAULTS;
 
-_iq ax,by,cz;
+/* создание и инициализация модели ДПТ с НВ */
+BDCM bdcm = BDCM_DEFAULTS;  
+/* создание объекта пересчета параметров двигателя 
+в константы для модели ДПТ с НВ*/
+BDCM_CONST bdcm_const = BDCM_CONST_DEFAULTS;
+
+PI_REG pi_ia = PI_REG_DEFAULTS;
 
 /* USER CODE END PV */
 
@@ -124,7 +146,7 @@ void escSystemStart(void)
    * Enable channles and set compare
 	 * Enable counter 
 	 * Force update/CC3 event generation */
-  //LL_TIM_EnableIT_CC3(TIM3);
+  LL_TIM_EnableIT_CC3(TIM3);
   LL_TIM_CC_EnableChannel(TIM3, LL_TIM_CHANNEL_CH1);
 	LL_TIM_CC_EnableChannel(TIM3, LL_TIM_CHANNEL_CH2);
 	LL_TIM_CC_EnableChannel(TIM3, LL_TIM_CHANNEL_CH4);
@@ -132,9 +154,9 @@ void escSystemStart(void)
 	LL_TIM_OC_SetCompareCH1(TIM3, 0);
 	LL_TIM_OC_SetCompareCH2(TIM3, 0);
 	LL_TIM_OC_SetCompareCH4(TIM3, 0);
-	LL_TIM_OC_SetCompareCH3(TIM3, LL_TIM_GetAutoReload(TIM3) - 1);
+	LL_TIM_OC_SetCompareCH3(TIM3, LL_TIM_GetAutoReload(TIM3));
 	LL_TIM_EnableCounter(TIM3);
-  LL_TIM_GenerateEvent_CC3(TIM3);
+  LL_TIM_GenerateEvent_UPDATE(TIM3);
 	
   /* Set DMA transfer addresses of source and destination
    * Set DMA transfer size
@@ -155,7 +177,7 @@ void escSystemStart(void)
 	LL_ADC_REG_SetDMATransfer(ADC1, LL_ADC_REG_DMA_TRANSFER_NONE);
 	LL_ADC_StartCalibration(ADC1);
 	while(LL_ADC_IsCalibrationOnGoing(ADC1)){}
-	LL_ADC_REG_SetDMATransfer(ADC1, LL_ADC_REG_DMA_TRANSFER_UNLIMITED);
+  LL_ADC_REG_SetDMATransfer(ADC1, LL_ADC_REG_DMA_TRANSFER_UNLIMITED);
 	//LL_ADC_EnableIT_EOS(ADC1);
 	LL_ADC_Enable(ADC1);
 	while (LL_ADC_IsActiveFlag_ADRDY(ADC1) == 0){}
@@ -167,11 +189,15 @@ void escSystemStart(void)
 
 void newSample_callback(void)
 {
-	//EventStartA(0);
 	LL_GPIO_ResetOutputPin(LED_GPIO_Port, LED_Pin);
-	static uint16_t ramp = 0;
+	
+	
+	
+/**********************************************************/
+	
+	static int16_t ramp = 0;
 	ramp+=5;
-	if (ramp >= 65500) ramp = 0;
+	if (ramp >= 32767) ramp = -32767;
 	
 		
 	teta += _IQ13(TETA_INCREMENT);
@@ -196,34 +222,47 @@ void newSample_callback(void)
 	lpf1.x = vSin;
 	Filter_Execute(&lpf1);
 	vangle = lpf1.y;
-
 	
-	/********* virtual oscilloscope *************/
-	if (status.startRecord){
-		status.endRecord = 0;
-		status.updateCmplt = 0;
+	/******** BDCM Model calc ***************/
+	if ( dataLog.startRecord == 1)
+	{
+		pi_ia.ref = _IQ(Ia_ref);
+		pi_ia.fdb = bdcm.i_a_pu;
+		pi_ia.calc(&pi_ia);
+	
+		bdcm.u_e_pu = _IQ(U_e_ref);
+	  bdcm.u_a_pu = pi_ia.out;
 		
-		streamCh1[frameCount] = (uint16_t)(vangle >> 19);
-		streamCh2[frameCount] = (uint16_t)(vteta >> 19);
-		streamCh3[frameCount] = (uint16_t)(vSin >> 19);
-		streamCh4[frameCount] = (uint16_t)(tetaTmp1 >> 22);
+		if (bdcm.W_pu > _IQ(0.1)) bdcm.Mc_pu = _IQ(5.0);
+		bdcm.calc(&bdcm);
+	}
+	/******************************************/
+	
+	/********* USART data loger *************/
+	if (dataLog.startRecord){
+		dataLog.endRecord = 0;
+		dataLog.updateCmplt = 0;
+		
+		streamCh1[frameCount] = adcData[0];
+		streamCh2[frameCount] = adcData[1];
+		streamCh3[frameCount] = bdcm.W_pu >> 16;
+		streamCh4[frameCount] = bdcm.i_a_pu >> 16;
 		
 		frameCount++;
 		if (frameCount >= STREAM_DBG_SIZE){
-		status.endRecord = 1;
-		status.startRecord = 0;
+		dataLog.endRecord = 1;
+		dataLog.startRecord = 0;
 		frameCount = 0;
 		}
 	}
 	/********************************************/
 	
 	LL_GPIO_SetOutputPin(LED_GPIO_Port, LED_Pin);
-	//EventStopA(0);
 }
 
 void txCmplt_callback(void)
 {
-	status.txCmplt = 1;
+	dataLog.txCmplt = 1;
 }
 
 void rxCmplt_callback(void){
@@ -272,9 +311,39 @@ int main(void)
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
 	
+	/* Digital LPF Init */
 	lpf1.Ts = _IQ(T_S);
 	lpf1.Tf = _IQ(0.0003183);
 	Filter_Init(&lpf1);
+	
+	/* Инициализируем модуль подсчета констант */
+	bdcm_const.Re = R_EX;
+	bdcm_const.Le = L_EX;
+	bdcm_const.Ue_base = BASE_VOLTAGE_EX;
+	bdcm_const.Ie_base = BASE_CURRENT_EX;
+	bdcm_const.Ra = R_A;
+	bdcm_const.La = L_A;
+	bdcm_const.Ua_base = BASE_VOLTAGE_A;
+	bdcm_const.Ia_base = BASE_CURRENT_A;
+	bdcm_const.T_base=1;
+	bdcm_const.Ts = T_S;
+	bdcm_const.J=J_NOM;
+	bdcm_const.k_fi_nom = K_FI_NOM;
+	bdcm_const.calc(&bdcm_const);
+/* Инициализируем константы */ 	
+ 	bdcm.K1 = _IQ(bdcm_const.K1);
+ 	bdcm.K2 = _IQ(bdcm_const.K2);
+ 	bdcm.K3 = _IQ(bdcm_const.K3);
+ 	bdcm.K4 = _IQ(bdcm_const.K4);
+  bdcm.K5 = _IQ(bdcm_const.K5);
+	bdcm.Mc_pu = _IQ(0);
+
+/* Инициализируем регулятор для контура тока якоря Ia */
+	pi_ia.Kp = _IQ(0.567);
+	pi_ia.Ki = _IQ(0.05);									
+  pi_ia.max_out = _IQ(1);
+  pi_ia.min_out = _IQ(-1);    
+ 	pi_ia.Ts =  _IQ(T_S);
 	
 	/*------------- Start periferia ---------------------*/
 	
@@ -283,7 +352,6 @@ int main(void)
 	escSystemStart();
 	StartTransfers();
 	
-	//EventRecorderInitialize(EventRecordAll, 1);
 	
   /* USER CODE END 2 */
 
@@ -291,14 +359,18 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-		if (status.endRecord == 1 && LL_USART_IsActiveFlag_TC(USART2) == 1 ){
+		if (dataLog.endRecord == 1 && LL_USART_IsActiveFlag_TC(USART2) == 1 ){
 		updateFrame(frameCount);
-		status.txCmplt = 0;
+		dataLog.txCmplt = 0;
     frameCount++;
 		if (frameCount >= STREAM_DBG_SIZE){
-			status.updateCmplt = 1;
-			status.endRecord = 0;
+			dataLog.updateCmplt = 1;
+			dataLog.endRecord = 0;
 			frameCount = 0;
+			dataPacketCount++;
+			
+			if (dataPacketCount < 32) dataLog.startRecord = 1;
+			else dataPacketCount = 0;
 			}
 		}
 		
@@ -451,7 +523,7 @@ void Configure_USART(void)
   
       In this example, Peripheral Clock is expected to be equal to 48000000 Hz => equal to SystemCoreClock
   */
-  LL_USART_SetBaudRate(USART2, SystemCoreClock, LL_USART_OVERSAMPLING_16, 115200); 
+  LL_USART_SetBaudRate(USART2, SystemCoreClock, LL_USART_OVERSAMPLING_16, UART_SPEED); 
 
   /* (4) Enable USART2 **********************************************************/
   LL_USART_Enable(USART2);
@@ -519,23 +591,48 @@ void StartTransfers(void)
   LL_DMA_EnableChannel(DMA1, LL_DMA_CHANNEL_4);
 }
 
+/* Datalog-virtual oscilloscipe module
+* if encode type BigEndian: place HI byte first, LO byte second.
+* if LittleEndian - vice versa.
+*/
 void updateFrame(uint8_t frameNmb){
 	
-		/* Start frame */
-	txData[0] = 65;
-	txData[1] = 66;
+	/* ---------- for serialPlot/Matlab --------- */
+	/* Start frame */
+	txData[0] = 0x45; 	// 'E' 0100 0101
+	txData[1] = 0x5A;		// 'Z'
 	/* Channel 1 */
-	txData[2] = (uint8_t) _HI(streamCh1[frameNmb]);
-	txData[3] = (uint8_t) _LO(streamCh1[frameNmb]);
+	txData[2] = (uint8_t) _LO(streamCh1[frameNmb]);
+	txData[3] = (uint8_t) _HI(streamCh1[frameNmb]);
 	/* Channel 2 */
-	txData[4] = (uint8_t) _HI(streamCh2[frameNmb]);
-	txData[5] = (uint8_t) _LO(streamCh2[frameNmb]);
+	txData[4] = (uint8_t) _LO(streamCh2[frameNmb]);
+	txData[5] = (uint8_t) _HI(streamCh2[frameNmb]);
 	/* Channel 3 */
-	txData[6] = (uint8_t) _HI(streamCh3[frameNmb]);
-	txData[7] = (uint8_t) _LO(streamCh3[frameNmb]);
+	txData[6] = (uint8_t) _LO(streamCh3[frameNmb]);
+	txData[7] = (uint8_t) _HI(streamCh3[frameNmb]);
 	/* Channel 4 */
 	txData[8] = (uint8_t) _LO(streamCh4[frameNmb]);
-	txData[9] = (uint8_t) _LO(streamCh4[frameNmb]);
+	txData[9] = (uint8_t) _HI(streamCh4[frameNmb]);
+	/* ---------------------------------------------- */
+	
+	/* ---------- for atmel data visualizer --------- */
+//	/* Start frame */
+//	txData[0] = 0x45;
+//	/* Channel 1 */
+//	txData[1] = (uint8_t) _LO(streamCh1[frameNmb]);
+//	txData[2] = (uint8_t) _HI(streamCh1[frameNmb]);
+//	/* Channel 2 */
+//	txData[3] = (uint8_t) _LO(streamCh2[frameNmb]);
+//	txData[4] = (uint8_t) _HI(streamCh2[frameNmb]);
+//	/* Channel 3 */
+//	txData[5] = (uint8_t) _LO(streamCh3[frameNmb]);
+//	txData[6] = (uint8_t) _HI(streamCh3[frameNmb]);
+//	/* Channel 4 */
+//	txData[7] = (uint8_t) _LO(streamCh4[frameNmb]);
+//	txData[8] = (uint8_t) _HI(streamCh4[frameNmb]);
+//	/* End frame */
+//	txData[9] = 0xBA;
+	/* ---------------------------------------------- */
 	
 	StartTransfers();
 }
