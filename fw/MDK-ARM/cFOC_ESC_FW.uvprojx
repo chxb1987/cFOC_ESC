@@ -391,16 +391,6 @@
           <GroupName>Application/User</GroupName>
           <Files>
             <File>
-              <FileName>bdcm.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\bdcm.c</FilePath>
-            </File>
-            <File>
-              <FileName>bdcm_const.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\bdcm_const.c</FilePath>
-            </File>
-            <File>
               <FileName>pi_reg.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\pi_reg.c</FilePath>
@@ -444,6 +434,36 @@
               <FileName>stm32f0xx_it.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Src/stm32f0xx_it.c</FilePath>
+            </File>
+            <File>
+              <FileName>ipark.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\ipark.c</FilePath>
+            </File>
+            <File>
+              <FileName>park.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\park.c</FilePath>
+            </File>
+            <File>
+              <FileName>pid_reg3.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\pid_reg3.c</FilePath>
+            </File>
+            <File>
+              <FileName>rampgen.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\rampgen.c</FilePath>
+            </File>
+            <File>
+              <FileName>rmp_cntl.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\rmp_cntl.c</FilePath>
+            </File>
+            <File>
+              <FileName>vhzprof.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\vhzprof.c</FilePath>
             </File>
           </Files>
         </Group>

@@ -47,14 +47,20 @@
 
 /* USER CODE BEGIN Includes */
 #include "fxptMath.h"
-//#include "EventRecorder.h"
 #include "cordicTrig.h"
 #include "digitalFilters.h"
-// определение параметров ДПТ
-#include "parameter.h"
-#include "bdcm.h"
-#include "bdcm_const.h"
 #include "pi_reg.h"
+#include "rampgen.h"
+#include "park.h"
+#include "ipark.h"
+#include "svgen.h"
+#include "clarke.h"
+#include "smopos.h"
+#include "smopos_const.h"
+#include "volt_calc.h"
+#include "speed_est.h"
+//#include <math.h>
+
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -67,64 +73,113 @@
 #define TX_BUFF_SIZE 					10
 #define STREAM_DBG_SIZE 			255
 
-#define F_SMP 								(48000000.0f / 2048.0f)
+#define F_SMP 								(48000000.0f / 4095.0f)
 #define T_S 									(1.0f / F_SMP)
-#define TETA_INCREMENT 				(M_2PI * 92.0f * T_S)	// for 1 period in buffer cycle(256): 1 / 255 *T_S
+#define TETA_BASE 						(M_2PI * 30.0f * T_S)	// for 1 period in buffer cycle(256): 1 / 255 *T_S
+#define TETA_INC_CONST				(M_2PI * T_S)
+#define SPEED_LOOP_PSC				8
+
+
+/* 		19.5 max phase current
+ * 		max_curr * sqrt(2) * R_sense * opAmp_gain = 19.5 * 1.41 * 0.002 * 30 = 1.6497
+ *		3102 = 10a = 14.1 amp
+ *		992 = -10a = -14.1 amp
+ *		20.8V max DC_BUS voltage (3.27/4095) * 6.3694 * 4095 = 20.8845
+ */
+	
+#define MAX_CURR 19.5			// max readeble from ADC
+#define MAX_DC_VOLT 20.9			// max readeble from ADC
+#define BASE_CURR 10.0			// base
+#define BASE_DC_VOLT 12.0			// MAX_DC_VOLT / sqrt(3)
+#define BASE_FREQ 100.0
+#define POLES 4
+#define RS 0.175
+#define LS 0.0000127
 
 volatile uint32_t adcData[ADC_DATA_BUFF_SIZE] = {0};
 volatile uint8_t txData[TX_BUFF_SIZE] = {0};
 
-volatile _iq angle = _IQ(0.5), calcSin;
-volatile _iq teta = 0;
-
+/*========== Drive struct field ============*/
+ enum driveState 
+ {
+    PREP,							// 0
+    RDY,							// 1
+		TUNE_PI,					// 2
+    RUN_OPNLOOP,			// 3
+    RUN_CLSLOOP,			// 4
+		RUN_SPDLOOP,			// 5
+		STOP,							// 6
+		SHTDWN						// 7
+ };
 
 typedef struct{
+	volatile _iq iU;
+	volatile _iq iV;
+	volatile _iq iW;
+	volatile _iq offsetZeroCU;
+	volatile _iq offsetZeroCV;
+}motor_t;
+
+union drive_u
+{
+	motor_t bldc;
+	uint8_t state;
+};
+
+union drive_u drive;
+/*==================================*/
+/*====== DataLog var ===============*/
+typedef struct{
 	volatile uint8_t txCmplt:1;
-	volatile uint8_t B:1;
 	volatile uint8_t startRecord:1;
 	volatile uint8_t endRecord:1;
 	volatile uint8_t updateCmplt:1;
-	volatile uint8_t F:1;
-	volatile uint8_t G:1;
-	volatile uint8_t H:1;
-} dataLogFlags_t;
+	
+	volatile uint8_t frameCount;
+	volatile uint8_t dataPacketCount;
+	volatile uint16_t streamCh1[STREAM_DBG_SIZE];
+	volatile uint16_t streamCh2[STREAM_DBG_SIZE];
+	volatile uint16_t streamCh3[STREAM_DBG_SIZE];
+	volatile uint16_t streamCh4[STREAM_DBG_SIZE];
+} dataLogVars_t;
 
-dataLogFlags_t dataLog;
+dataLogVars_t dataLog;
 
-volatile uint16_t streamCh1[STREAM_DBG_SIZE];
-volatile uint16_t streamCh2[STREAM_DBG_SIZE];
-volatile uint16_t streamCh3[STREAM_DBG_SIZE];
-volatile uint16_t streamCh4[STREAM_DBG_SIZE];
+/*==========================================*/
 
-volatile uint8_t frameCount = 0;
-volatile uint8_t dataPacketCount = 0;
-
-volatile _iq qSin, qCos;
-
-volatile _iq vteta, vSin, vCos, vangle;
-
-volatile _iq harmInj0 = _IQ(37.0);										// Injected harmonic frequency (relative of base)
-volatile _iq harmInj1 = _IQ(56.0);										// Injected harmonic frequency (relative of base)
-volatile _iq hmScale0 = _IQ(0.2);											// Injected harmonic magnitude (relative of base)
-volatile _iq hmScale1 = _IQ(0.15);										// Injected harmonic magnitude (relative of base)
-
-// Глобальные переменные используемые в этой системе
-float U_e_ref = 1;         /* Задание напряжения обмотки возбуждения (о.е) */
-float U_a_ref = 1;         /* Задание напряжения обмотки якоря (о.е) */
-float Mc_ref= 0;           /* Задание момента сопротивления (о.е) */
-float Ia_ref = 1;          /* Задание тока якоря для ПИ регулятора (о.е) */
-float speed_ref = 0.5;     /* Задание скорости для регулятора скорости (о.е) */
+volatile _iq tetaStep = _IQ(TETA_INC_CONST);
+volatile _iq teta;
+volatile _iq olSpeedRef = _IQ(TETA_BASE);
+volatile _iq refId = _IQ(0.0);
+volatile _iq refIq = _IQ(0.0);
+volatile _iq refSpeed = _IQ(0.0);
+volatile _iq SpeedLoopCount = 0;
 
 /* Digital LPF Init */
-FILTER_DATA lpf1 = FILTER_DEFAULTS;
+FILTER_DATA lpf_iD = FILTER_DEFAULTS;
+FILTER_DATA lpf_iQ = FILTER_DEFAULTS;
 
-/* создание и инициализация модели ДПТ с НВ */
-BDCM bdcm = BDCM_DEFAULTS;  
-/* создание объекта пересчета параметров двигателя 
-в константы для модели ДПТ с НВ*/
-BDCM_CONST bdcm_const = BDCM_CONST_DEFAULTS;
+PI_REG pi_iD = PI_REG_DEFAULTS;
+PI_REG pi_iQ = PI_REG_DEFAULTS;
+PI_REG pi_spd = PI_REG_DEFAULTS;
 
-PI_REG pi_ia = PI_REG_DEFAULTS;
+//RAMPGEN rg1 = RAMPGEN_DEFAULTS;
+
+IPARK ipark1 = IPARK_DEFAULTS;
+
+CLARKE clark1 = CLARKE_DEFAULTS;
+
+PARK park1 = PARK_DEFAULTS;
+
+PHASEVOLTAGE voltPh = PHASEVOLTAGE_DEFAULTS;
+
+SVGEN svpwm = SVGEN_DEFAULTS;
+
+SMOPOS smo1 = SMOPOS_DEFAULTS;
+
+//SMOPOS_CONST smo1_const = SMOPOS_CONST_DEFAULTS;
+
+SPEED_ESTIMATION spdest1 = SPEED_ESTIMATION_DEFAULTS;
 
 /* USER CODE END PV */
 
@@ -138,7 +193,7 @@ void SystemClock_Config(void);
 void Configure_DMA(void);
 void Configure_USART(void);
 void StartTransfers(void);
-void updateFrame(uint8_t frameNmb);
+void updateFrame(uint16_t frameNmb);
 
 void escSystemStart(void)
 {
@@ -146,17 +201,17 @@ void escSystemStart(void)
    * Enable channles and set compare
 	 * Enable counter 
 	 * Force update/CC3 event generation */
-  LL_TIM_EnableIT_CC3(TIM3);
+  //LL_TIM_EnableIT_CC3(TIM3);
   LL_TIM_CC_EnableChannel(TIM3, LL_TIM_CHANNEL_CH1);
 	LL_TIM_CC_EnableChannel(TIM3, LL_TIM_CHANNEL_CH2);
 	LL_TIM_CC_EnableChannel(TIM3, LL_TIM_CHANNEL_CH4);
-	LL_TIM_SetAutoReload(TIM3, 1023);
+	LL_TIM_SetAutoReload(TIM3, 2047);
 	LL_TIM_OC_SetCompareCH1(TIM3, 0);
 	LL_TIM_OC_SetCompareCH2(TIM3, 0);
 	LL_TIM_OC_SetCompareCH4(TIM3, 0);
 	LL_TIM_OC_SetCompareCH3(TIM3, LL_TIM_GetAutoReload(TIM3));
 	LL_TIM_EnableCounter(TIM3);
-  LL_TIM_GenerateEvent_UPDATE(TIM3);
+  LL_TIM_GenerateEvent_CC3(TIM3);
 	
   /* Set DMA transfer addresses of source and destination
    * Set DMA transfer size
@@ -189,80 +244,188 @@ void escSystemStart(void)
 
 void newSample_callback(void)
 {
-	LL_GPIO_ResetOutputPin(LED_GPIO_Port, LED_Pin);
+	LL_GPIO_SetOutputPin(LED_GPIO_Port, LED_Pin);
 	
-	
-	
-/**********************************************************/
-	
-	static int16_t ramp = 0;
-	ramp+=5;
-	if (ramp >= 32767) ramp = -32767;
-	
+	if ( drive.state  == RDY || drive.state  == RUN_OPNLOOP || drive.state  == RUN_CLSLOOP || drive.state  == RUN_SPDLOOP  )
+	{
+	/*------------- Get ADC result and Clarke transform --------------*/
 		
-	teta += _IQ13(TETA_INCREMENT);
-	if ( teta >= _IQ13(M_PI) ) { teta = -_IQ13(M_PI); }
+	clark1.As = ( adcData[0] - drive.bldc.offsetZeroCU ) << 13;
+	clark1.Bs = ( adcData[1] - drive.bldc.offsetZeroCV ) << 13;
+		
+	CLARKE_MACRO(clark1);
+		
+	/*------------- Ramp and sawtooth wave generation -----------------*/
+		
+	if (drive.state != TUNE_PI )
+	{
+	if ( tetaStep < olSpeedRef ) tetaStep += _IQ(0.000001);
+		if ( tetaStep > olSpeedRef ) tetaStep -= _IQ(0.000001);
+	teta += tetaStep;
+	if ( teta >= _IQ(M_PI) ) { teta -= _IQ(M_2PI); }
+	}
 	
-//	CORDICsincos(teta, CORDIC_1F, &qSin, &qCos);
+	/*------------- Park transform --------------------------*/
+	
+//	CORDICsincos( _IQtoIQ13(teta), CORDIC_1F, &park1.Sin, &park1.Cos);
 //  CORDICatan2sqrt(&angle,&calcSin,qSin, qCos);
 	
-	vteta = _IQ13toIQ(teta);
-	//vSin = _IQ13toIQ(qSin);
-	//vCos = _IQsin(vteta);
-	//vangle = _IQ13toIQ(angle);
-	
-	static _iq tetaTmp1, tetaTmp2;
-	tetaTmp1 += _IQmpy( _IQ(TETA_INCREMENT), harmInj0);
-	tetaTmp2 += _IQmpy( _IQ(TETA_INCREMENT), harmInj1);
-	if ( tetaTmp1 >= _IQ(M_PI) ) { tetaTmp1 = -_IQ(M_PI); }
-	if ( tetaTmp2 >= _IQ(M_PI) ) { tetaTmp2 = -_IQ(M_PI); }
-	
-	vSin = _IQsin(vteta) + _IQmpy( _IQsin(tetaTmp1), hmScale0 ) + _IQmpy( _IQsin(tetaTmp2), hmScale1 );
-	
-	lpf1.x = vSin;
-	Filter_Execute(&lpf1);
-	vangle = lpf1.y;
-	
-	/******** BDCM Model calc ***************/
-	if ( dataLog.startRecord == 1)
+	if (drive.state == RUN_OPNLOOP )
 	{
-		pi_ia.ref = _IQ(Ia_ref);
-		pi_ia.fdb = bdcm.i_a_pu;
-		pi_ia.calc(&pi_ia);
-	
-		bdcm.u_e_pu = _IQ(U_e_ref);
-	  bdcm.u_a_pu = pi_ia.out;
-		
-		if (bdcm.W_pu > _IQ(0.1)) bdcm.Mc_pu = _IQ(5.0);
-		bdcm.calc(&bdcm);
+	park1.Sin = _IQsin(teta);
+	park1.Cos = _IQcos(teta);
 	}
-	/******************************************/
+	if (drive.state == RUN_CLSLOOP)
+	{
+	park1.Sin = _IQsin(smo1.Theta);
+	park1.Cos = _IQcos(smo1.Theta);
+	}
+	park1.Alpha = clark1.Alpha;
+	park1.Beta = clark1.Beta;
+	park1.calc(&park1);
+	
+	/*------------- SpeedLoop --------------------------*/
+	
+	if (drive.state == RUN_SPDLOOP && SpeedLoopCount == SPEED_LOOP_PSC)
+	 {
+	  pi_spd.ref = refSpeed;
+	  pi_spd.fdb = spdest1.EstimatedSpeed;
+	  pi_iD.calc(&pi_spd);
+	  SpeedLoopCount=1;
+	 }
+	else SpeedLoopCount++;
+
+	if(drive.state == PREP || drive.state == RDY || drive.state == STOP )
+	{
+		pi_spd.intgrl = 0; pi_spd.out = 0;
+	}
+	/*------------- cumpute current PI -------------------*/
+	
+//	lpf_iD.x = park1.Ds;
+//	Filter_Execute(&lpf_iD);
+//	park1.Ds = lpf_iD.y;
+//	
+//	lpf_iQ.x = park1.Qs;
+//	Filter_Execute(&lpf_iQ);
+//	park1.Qs = lpf_iQ.y;
+	
+	pi_iD.ref = refId;
+	pi_iD.fdb = park1.Ds;
+	pi_iD.calc(&pi_iD);
+	
+	if ( drive.state == RUN_SPDLOOP ) pi_iQ.ref = pi_spd.out;
+	else pi_iQ.ref = refIq;
+	pi_iQ.fdb = park1.Qs;
+	pi_iQ.calc(&pi_iQ);
+	
+	if ( drive.state <= RDY )
+	{
+		pi_iD.intgrl = 0;
+		pi_iQ.intgrl = 0;
+		pi_spd.intgrl = 0;
+	}
+	
+	/*------------- Inverse Park transform --------------------------*/
+	
+	ipark1.Ds = pi_iD.out;
+	ipark1.Qs = pi_iQ.out;
+	ipark1.Sin = park1.Sin;
+	ipark1.Cos = park1.Cos;
+	ipark1.calc(&ipark1);
+	
+	/*------------- Phase voltages calc --------------------------*/
+	
+	voltPh.MfuncV1 = svpwm.Ta;
+	voltPh.MfuncV2 = svpwm.Tb;
+	voltPh.MfuncV3 = svpwm.Tc;
+	voltPh.DcBusVolt = ( adcData[2] << 12 );
+	PHASEVOLT_MACRO(voltPh);
+	
+	/*------------- SMO --------------------------*/
+	
+	if (drive.state == RUN_CLSLOOP && smo1.Kslide<_IQ(0.15)) smo1.Kslide=smo1.Kslide+_IQ(0.00001);
+	// Low Kslide responds better to loop transients
+	// Increase Kslide for better torque response after closing the speed loop
+
+	smo1.Ialpha = clark1.Alpha;
+	smo1.Ibeta  = clark1.Beta;
+	smo1.Valpha = voltPh.Valpha;
+	smo1.Vbeta  = voltPh.Vbeta;
+	SMO_MACRO(smo1);
+	smo1.Theta = _IQmpy2( _IQ14toIQ(smo1.Theta) );
+	
+	/*------------- Speed estimation --------------------------*/
+	
+	spdest1.EstimatedTheta = teta;
+	SE_MACRO(spdest1);
+	
+	/*-------------  SVPWM generation --------------------------------*/
+	
+	svpwm.Ualpha = ipark1.Alpha;
+	svpwm.Ubeta = ipark1.Beta;
+	
+	SVGENDQ_MACRO(svpwm);
+	
+	LL_TIM_OC_SetCompareCH1(TIM3, (svpwm.Ta >> 14) + 1023);
+	LL_TIM_OC_SetCompareCH2(TIM3, (svpwm.Tb >> 14) + 1023);
+	LL_TIM_OC_SetCompareCH4(TIM3, (svpwm.Tc >> 14) + 1023);
+	
+	}
+	
+	/*----------------------------------------------*/
+	
+	if (drive.state == PREP)
+	{
+		/*------------ Estimate zero offset ------------*/
+		drive.bldc.iU = adcData[0];
+		drive.bldc.iV = adcData[1];
+		/* Disable output channels */
+		LL_TIM_CC_DisableChannel(TIM1, LL_TIM_CHANNEL_CH1);
+		LL_TIM_CC_DisableChannel(TIM1, LL_TIM_CHANNEL_CH2);
+		LL_TIM_CC_DisableChannel(TIM1, LL_TIM_CHANNEL_CH3);
+		static uint8_t zeroCnt = 0;
+		drive.bldc.offsetZeroCU += drive.bldc.iU;
+		drive.bldc.offsetZeroCV += drive.bldc.iV;
+		zeroCnt++;
+		if (zeroCnt >= 128)	// if complete all samples
+		{
+			drive.bldc.offsetZeroCU = drive.bldc.offsetZeroCU >> 7; // zeroU >> 7;
+			drive.bldc.offsetZeroCV = drive.bldc.offsetZeroCV >> 7; // zeroV >> 7;
+			zeroCnt = 0;
+			drive.state = RDY;
+			/* Enable output channels */
+			LL_TIM_CC_EnableChannel(TIM1, LL_TIM_CHANNEL_CH1);
+			LL_TIM_CC_EnableChannel(TIM1, LL_TIM_CHANNEL_CH2);
+			LL_TIM_CC_EnableChannel(TIM1, LL_TIM_CHANNEL_CH3);
+		}
+	}
 	
 	/********* USART data loger *************/
 	if (dataLog.startRecord){
 		dataLog.endRecord = 0;
 		dataLog.updateCmplt = 0;
 		
-		streamCh1[frameCount] = adcData[0];
-		streamCh2[frameCount] = adcData[1];
-		streamCh3[frameCount] = bdcm.W_pu >> 16;
-		streamCh4[frameCount] = bdcm.i_a_pu >> 16;
+		dataLog.streamCh1[dataLog.frameCount] = clark1.Alpha >> 16;
+		dataLog.streamCh2[dataLog.frameCount] = clark1.Beta >> 16;
+		dataLog.streamCh3[dataLog.frameCount] = voltPh.DcBusVolt >> 16;
+		dataLog.streamCh4[dataLog.frameCount] = smo1.Theta >> 16;
 		
-		frameCount++;
-		if (frameCount >= STREAM_DBG_SIZE){
+		dataLog.frameCount++;
+		if (dataLog.frameCount >= STREAM_DBG_SIZE){
 		dataLog.endRecord = 1;
 		dataLog.startRecord = 0;
-		frameCount = 0;
+		dataLog.frameCount = 0;
 		}
 	}
+	
 	/********************************************/
 	
-	LL_GPIO_SetOutputPin(LED_GPIO_Port, LED_Pin);
+	LL_GPIO_ResetOutputPin(LED_GPIO_Port, LED_Pin);
 }
 
 void txCmplt_callback(void)
 {
-	dataLog.txCmplt = 1;
+	//dataLog.txCmplt = 1;
 }
 
 void rxCmplt_callback(void){
@@ -312,38 +475,57 @@ int main(void)
   /* USER CODE BEGIN 2 */
 	
 	/* Digital LPF Init */
-	lpf1.Ts = _IQ(T_S);
-	lpf1.Tf = _IQ(0.0003183);
-	Filter_Init(&lpf1);
+	lpf_iD.Ts = _IQ(T_S);
+	lpf_iD.Tf = _IQ(0.00002);
+	Filter_Init(&lpf_iD);
 	
-	/* Инициализируем модуль подсчета констант */
-	bdcm_const.Re = R_EX;
-	bdcm_const.Le = L_EX;
-	bdcm_const.Ue_base = BASE_VOLTAGE_EX;
-	bdcm_const.Ie_base = BASE_CURRENT_EX;
-	bdcm_const.Ra = R_A;
-	bdcm_const.La = L_A;
-	bdcm_const.Ua_base = BASE_VOLTAGE_A;
-	bdcm_const.Ia_base = BASE_CURRENT_A;
-	bdcm_const.T_base=1;
-	bdcm_const.Ts = T_S;
-	bdcm_const.J=J_NOM;
-	bdcm_const.k_fi_nom = K_FI_NOM;
-	bdcm_const.calc(&bdcm_const);
-/* Инициализируем константы */ 	
- 	bdcm.K1 = _IQ(bdcm_const.K1);
- 	bdcm.K2 = _IQ(bdcm_const.K2);
- 	bdcm.K3 = _IQ(bdcm_const.K3);
- 	bdcm.K4 = _IQ(bdcm_const.K4);
-  bdcm.K5 = _IQ(bdcm_const.K5);
-	bdcm.Mc_pu = _IQ(0);
+	lpf_iQ.Ts = _IQ(T_S);
+	lpf_iQ.Tf = _IQ(0.00002);
+	Filter_Init(&lpf_iQ);
 
-/* Инициализируем регулятор для контура тока якоря Ia */
-	pi_ia.Kp = _IQ(0.567);
-	pi_ia.Ki = _IQ(0.05);									
-  pi_ia.max_out = _IQ(1);
-  pi_ia.min_out = _IQ(-1);    
- 	pi_ia.Ts =  _IQ(T_S);
+/* Init PI controllers: current DQ, speed */
+	pi_iD.Kp = _IQ(0.09);
+	pi_iD.Ki = _IQ(0.29);									
+  pi_iD.max_out = _IQ(0.75);
+  pi_iD.min_out = _IQ(-0.75);    
+ 	pi_iD.Ts =  _IQ(T_S);
+	
+	pi_iQ.Kp = _IQ(0.09);	// Kp = L / ( U_DC * T_S )
+	pi_iQ.Ki = _IQ(0.29);	// Ki = T_S / ( R / U_DC )									
+  pi_iQ.max_out = _IQ(0.75);
+  pi_iQ.min_out = _IQ(-0.75);    
+ 	pi_iQ.Ts =  _IQ(T_S);
+	
+	pi_spd.Kp = _IQ(0.5);
+	pi_spd.Ki = _IQ(T_S * SPEED_LOOP_PSC / 0.2);									
+  pi_spd.max_out = _IQ(0.95);
+  pi_spd.min_out = _IQ(-0.95);    
+ 	pi_spd.Ts =  _IQ(T_S);
+
+	// Initialize the SPEED_EST module SMOPOS based speed calculation
+  spdest1.K1 = _IQ21( 1 / ( BASE_FREQ * T_S ) );
+  spdest1.K2 = _IQ( 1 / ( 1 + T_S * M_2PI * 5 ) );  // Low-pass cut-off frequency
+  spdest1.K3 = _IQ(1) - spdest1.K2;
+  spdest1.BaseRpm = 120 * ( BASE_FREQ / POLES );
+	
+	// Initialize the SMOPOS constant module
+//	smo1_const.Rs = RS;
+//	smo1_const.Ls = LS;
+//	smo1_const.Ib = BASE_CURR;
+//	smo1_const.Vb = BASE_DC_VOLT;
+//	smo1_const.Ts = T_S;
+//	SMO_CONST_MACRO(smo1_const);
+
+// 	smo1.Fsmopos = _IQ(smo1_const.Fsmopos);
+// 	smo1.Gsmopos = _IQ(smo1_const.Gsmopos);
+	smo1.Fsmopos = _IQ(0.0274); 			// Pass parameters to smo1
+	smo1.Gsmopos = _IQ(-0.00622); 		// Pass parameters to smo1
+	smo1.Kslide = _IQ(0.01);
+	smo1.Kslf = _IQ(0.010570739);
+
+
+	LL_GPIO_SetOutputPin(POWER_STAGE_EN_GPIO_Port, POWER_STAGE_EN_Pin);
+	drive.state = PREP;
 	
 	/*------------- Start periferia ---------------------*/
 	
@@ -359,20 +541,23 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+		/*--------------- Transmit UART dataLog ----------------------------*/
+		
 		if (dataLog.endRecord == 1 && LL_USART_IsActiveFlag_TC(USART2) == 1 ){
-		updateFrame(frameCount);
+		updateFrame(dataLog.frameCount);
 		dataLog.txCmplt = 0;
-    frameCount++;
-		if (frameCount >= STREAM_DBG_SIZE){
+    dataLog.frameCount++;
+		if (dataLog.frameCount >= STREAM_DBG_SIZE){
 			dataLog.updateCmplt = 1;
 			dataLog.endRecord = 0;
-			frameCount = 0;
-			dataPacketCount++;
+			dataLog.frameCount = 0;
+			dataLog.dataPacketCount++;
 			
-			if (dataPacketCount < 32) dataLog.startRecord = 1;
-			else dataPacketCount = 0;
+			if (dataLog.dataPacketCount < 32) dataLog.startRecord = 1;
+			else dataLog.dataPacketCount = 0;
 			}
 		}
+		/*-------------------------------------------------------------------*/
 		
 
   /* USER CODE END WHILE */
@@ -549,7 +734,7 @@ void Configure_DMA(void)
   /* (3) Configure the DMA functional parameters for transmission */
   LL_DMA_ConfigTransfer(DMA1, LL_DMA_CHANNEL_4, 
                         LL_DMA_DIRECTION_MEMORY_TO_PERIPH | 
-                        LL_DMA_PRIORITY_LOW              | 
+                        LL_DMA_PRIORITY_HIGH              | 
                         LL_DMA_MODE_NORMAL                | 
                         LL_DMA_PERIPH_NOINCREMENT         | 
                         LL_DMA_MEMORY_INCREMENT           | 
@@ -595,43 +780,24 @@ void StartTransfers(void)
 * if encode type BigEndian: place HI byte first, LO byte second.
 * if LittleEndian - vice versa.
 */
-void updateFrame(uint8_t frameNmb){
+void updateFrame(uint16_t frameNmb){
 	
 	/* ---------- for serialPlot/Matlab --------- */
 	/* Start frame */
 	txData[0] = 0x45; 	// 'E' 0100 0101
 	txData[1] = 0x5A;		// 'Z'
 	/* Channel 1 */
-	txData[2] = (uint8_t) _LO(streamCh1[frameNmb]);
-	txData[3] = (uint8_t) _HI(streamCh1[frameNmb]);
+	txData[2] = (uint8_t) _HI(dataLog.streamCh1[frameNmb]);
+	txData[3] = (uint8_t) _LO(dataLog.streamCh1[frameNmb]);
 	/* Channel 2 */
-	txData[4] = (uint8_t) _LO(streamCh2[frameNmb]);
-	txData[5] = (uint8_t) _HI(streamCh2[frameNmb]);
+	txData[4] = (uint8_t) _HI(dataLog.streamCh2[frameNmb]);
+	txData[5] = (uint8_t) _LO(dataLog.streamCh2[frameNmb]);
 	/* Channel 3 */
-	txData[6] = (uint8_t) _LO(streamCh3[frameNmb]);
-	txData[7] = (uint8_t) _HI(streamCh3[frameNmb]);
+	txData[6] = (uint8_t) _HI(dataLog.streamCh3[frameNmb]);
+	txData[7] = (uint8_t) _LO(dataLog.streamCh3[frameNmb]);
 	/* Channel 4 */
-	txData[8] = (uint8_t) _LO(streamCh4[frameNmb]);
-	txData[9] = (uint8_t) _HI(streamCh4[frameNmb]);
-	/* ---------------------------------------------- */
-	
-	/* ---------- for atmel data visualizer --------- */
-//	/* Start frame */
-//	txData[0] = 0x45;
-//	/* Channel 1 */
-//	txData[1] = (uint8_t) _LO(streamCh1[frameNmb]);
-//	txData[2] = (uint8_t) _HI(streamCh1[frameNmb]);
-//	/* Channel 2 */
-//	txData[3] = (uint8_t) _LO(streamCh2[frameNmb]);
-//	txData[4] = (uint8_t) _HI(streamCh2[frameNmb]);
-//	/* Channel 3 */
-//	txData[5] = (uint8_t) _LO(streamCh3[frameNmb]);
-//	txData[6] = (uint8_t) _HI(streamCh3[frameNmb]);
-//	/* Channel 4 */
-//	txData[7] = (uint8_t) _LO(streamCh4[frameNmb]);
-//	txData[8] = (uint8_t) _HI(streamCh4[frameNmb]);
-//	/* End frame */
-//	txData[9] = 0xBA;
+	txData[8] = (uint8_t) _HI(dataLog.streamCh4[frameNmb]);
+	txData[9] = (uint8_t) _LO(dataLog.streamCh4[frameNmb]);
 	/* ---------------------------------------------- */
 	
 	StartTransfers();

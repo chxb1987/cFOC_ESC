@@ -1,35 +1,7 @@
 Dependencies for Project 'cFOC_ESC_FW', Target 'cFOC_ESC_FW': (DO NOT MODIFY !)
 F (startup_stm32f070x6.s)(0x5D505F52)(--cpu Cortex-M0 -g --apcs=interwork --pd "__MICROLIB SETA 1"-I.\RTE\_cFOC_ESC_FW-ID:\apps\Keil_v5\ARM\PACK\ARM\CMSIS\5.4.0\CMSIS\Core\Include-ID:\apps\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\2.0.0\Drivers\CMSIS\Device\ST\STM32F0xx\Include--pd "__UVISION_VERSION SETA 524" --pd "_RTE_ SETA 1" --pd "STM32F070x6 SETA 1"--list startup_stm32f070x6.lst --xref -o cfoc_esc_fw\startup_stm32f070x6.o --depend cfoc_esc_fw\startup_stm32f070x6.d)
-F (..\Src\bdcm.c)(0x5C9CF060)(--c99 -c --cpu Cortex-M0 -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F0xx_HAL_Driver/Inc -I ../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_cFOC_ESC_FW-ID:\apps\Keil_v5\ARM\PACK\ARM\CMSIS\5.4.0\CMSIS\Core\Include-ID:\apps\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\2.0.0\Drivers\CMSIS\Device\ST\STM32F0xx\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F070x6 -DUSE_FULL_LL_DRIVER -DSTM32F070x6 -DHSE_VALUE="8000000" -DHSE_STARTUP_TIMEOUT="100" -DLSE_STARTUP_TIMEOUT="5000" -DLSE_VALUE="32768" -DHSI_VALUE="8000000" -DLSI_VALUE="40000" -DVDD_VALUE="3300" -DPREFETCH_ENABLE="1" -DINSTRUCTION_CACHE_ENABLE="0" -DDATA_CACHE_ENABLE="0"-o cfoc_esc_fw\bdcm.o --omf_browse cfoc_esc_fw\bdcm.crf --depend cfoc_esc_fw\bdcm.d)
-I (../Inc/fxptMath.h)(0x5C92A2D2)
-I (../Inc/main.h)(0x5D505F50)
-I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_adc.h)(0x5BD07AD5)
-I (../Drivers/CMSIS/Device/ST/STM32F0xx/Include/stm32f0xx.h)(0x5BD07AB9)
-I (../Drivers/CMSIS/Device/ST/STM32F0xx/Include/stm32f070x6.h)(0x5BD07AB9)
-I (../Drivers/CMSIS/Include/core_cm0.h)(0x5BD07AD4)
-I (D:\apps\Keil_v5\ARM\ARMCC\include\stdint.h)(0x588BC994)
-I (../Drivers/CMSIS/Include/core_cmInstr.h)(0x5BD07AD4)
-I (../Drivers/CMSIS/Include/cmsis_armcc.h)(0x5BD07AD4)
-I (../Drivers/CMSIS/Include/core_cmFunc.h)(0x5BD07AD4)
-I (../Drivers/CMSIS/Device/ST/STM32F0xx/Include/system_stm32f0xx.h)(0x5BD07AB9)
-I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_dma.h)(0x5BD07AD5)
-I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_i2c.h)(0x5BD07AD5)
-I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_crs.h)(0x5BD07AD5)
-I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_rcc.h)(0x5BD07AD5)
-I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_bus.h)(0x5BD07AD5)
-I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_system.h)(0x5BD07AD5)
-I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_exti.h)(0x5BD07AD5)
-I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_cortex.h)(0x5BD07AD5)
-I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_utils.h)(0x5BD07AD5)
-I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_pwr.h)(0x5BD07AD5)
-I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_tim.h)(0x5BD07AD5)
-I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_usart.h)(0x5BD07AD5)
-I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_gpio.h)(0x5BD07AD5)
-I (../Inc/bdcm.h)(0x5C8F4FC6)
-F (..\Src\bdcm_const.c)(0x483C4C58)(--c99 -c --cpu Cortex-M0 -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F0xx_HAL_Driver/Inc -I ../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_cFOC_ESC_FW-ID:\apps\Keil_v5\ARM\PACK\ARM\CMSIS\5.4.0\CMSIS\Core\Include-ID:\apps\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\2.0.0\Drivers\CMSIS\Device\ST\STM32F0xx\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F070x6 -DUSE_FULL_LL_DRIVER -DSTM32F070x6 -DHSE_VALUE="8000000" -DHSE_STARTUP_TIMEOUT="100" -DLSE_STARTUP_TIMEOUT="5000" -DLSE_VALUE="32768" -DHSI_VALUE="8000000" -DLSI_VALUE="40000" -DVDD_VALUE="3300" -DPREFETCH_ENABLE="1" -DINSTRUCTION_CACHE_ENABLE="0" -DDATA_CACHE_ENABLE="0"-o cfoc_esc_fw\bdcm_const.o --omf_browse cfoc_esc_fw\bdcm_const.crf --depend cfoc_esc_fw\bdcm_const.d)
-I (../Inc/bdcm_const.h)(0x483C4C12)
 F (..\Src\pi_reg.c)(0x5C9BE96C)(--c99 -c --cpu Cortex-M0 -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F0xx_HAL_Driver/Inc -I ../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_cFOC_ESC_FW-ID:\apps\Keil_v5\ARM\PACK\ARM\CMSIS\5.4.0\CMSIS\Core\Include-ID:\apps\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\2.0.0\Drivers\CMSIS\Device\ST\STM32F0xx\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F070x6 -DUSE_FULL_LL_DRIVER -DSTM32F070x6 -DHSE_VALUE="8000000" -DHSE_STARTUP_TIMEOUT="100" -DLSE_STARTUP_TIMEOUT="5000" -DLSE_VALUE="32768" -DHSI_VALUE="8000000" -DLSI_VALUE="40000" -DVDD_VALUE="3300" -DPREFETCH_ENABLE="1" -DINSTRUCTION_CACHE_ENABLE="0" -DDATA_CACHE_ENABLE="0"-o cfoc_esc_fw\pi_reg.o --omf_browse cfoc_esc_fw\pi_reg.crf --depend cfoc_esc_fw\pi_reg.d)
-I (../Inc/fxptMath.h)(0x5C92A2D2)
+I (../Inc/fxptMath.h)(0x5D554B89)
 I (../Inc/main.h)(0x5D505F50)
 I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_adc.h)(0x5BD07AD5)
 I (../Drivers/CMSIS/Device/ST/STM32F0xx/Include/stm32f0xx.h)(0x5BD07AB9)
@@ -54,7 +26,7 @@ I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_tim.h)(0x5BD07AD5)
 I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_usart.h)(0x5BD07AD5)
 I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_gpio.h)(0x5BD07AD5)
 I (../Inc/pi_reg.h)(0x5C9BEA6C)
-F (../Src/main.c)(0x5D5062F6)(--c99 -c --cpu Cortex-M0 -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F0xx_HAL_Driver/Inc -I ../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_cFOC_ESC_FW-ID:\apps\Keil_v5\ARM\PACK\ARM\CMSIS\5.4.0\CMSIS\Core\Include-ID:\apps\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\2.0.0\Drivers\CMSIS\Device\ST\STM32F0xx\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F070x6 -DUSE_FULL_LL_DRIVER -DSTM32F070x6 -DHSE_VALUE="8000000" -DHSE_STARTUP_TIMEOUT="100" -DLSE_STARTUP_TIMEOUT="5000" -DLSE_VALUE="32768" -DHSI_VALUE="8000000" -DLSI_VALUE="40000" -DVDD_VALUE="3300" -DPREFETCH_ENABLE="1" -DINSTRUCTION_CACHE_ENABLE="0" -DDATA_CACHE_ENABLE="0"-o cfoc_esc_fw\main.o --omf_browse cfoc_esc_fw\main.crf --depend cfoc_esc_fw\main.d)
+F (../Src/main.c)(0x5D55B6BF)(--c99 -c --cpu Cortex-M0 -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F0xx_HAL_Driver/Inc -I ../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_cFOC_ESC_FW-ID:\apps\Keil_v5\ARM\PACK\ARM\CMSIS\5.4.0\CMSIS\Core\Include-ID:\apps\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\2.0.0\Drivers\CMSIS\Device\ST\STM32F0xx\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F070x6 -DUSE_FULL_LL_DRIVER -DSTM32F070x6 -DHSE_VALUE="8000000" -DHSE_STARTUP_TIMEOUT="100" -DLSE_STARTUP_TIMEOUT="5000" -DLSE_VALUE="32768" -DHSI_VALUE="8000000" -DLSI_VALUE="40000" -DVDD_VALUE="3300" -DPREFETCH_ENABLE="1" -DINSTRUCTION_CACHE_ENABLE="0" -DDATA_CACHE_ENABLE="0"-o cfoc_esc_fw\main.o --omf_browse cfoc_esc_fw\main.crf --depend cfoc_esc_fw\main.d)
 I (../Inc/main.h)(0x5D505F50)
 I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_adc.h)(0x5BD07AD5)
 I (../Drivers/CMSIS/Device/ST/STM32F0xx/Include/stm32f0xx.h)(0x5BD07AB9)
@@ -84,13 +56,19 @@ I (../Inc/i2c.h)(0x5D505F4F)
 I (../Inc/tim.h)(0x5D505F4F)
 I (../Inc/usart.h)(0x5D505F50)
 I (../Inc/gpio.h)(0x5D505F4C)
-I (../Inc/fxptMath.h)(0x5C92A2D2)
-I (../Inc/cordicTrig.h)(0x5C77889B)
-I (../Inc/digitalFilters.h)(0x5C8949F8)
-I (../Inc/parameter.h)(0x5C92ABDC)
-I (../Inc/bdcm.h)(0x5C8F4FC6)
-I (../Inc/bdcm_const.h)(0x483C4C12)
+I (../Inc/fxptMath.h)(0x5D554B89)
+I (../Inc/cordicTrig.h)(0x5D540E8A)
+I (../Inc/digitalFilters.h)(0x5D507E82)
 I (../Inc/pi_reg.h)(0x5C9BEA6C)
+I (../Inc/rampgen.h)(0x5D513437)
+I (../Inc/park.h)(0x5D51B082)
+I (../Inc/ipark.h)(0x5D51652C)
+I (../Inc/svgen.h)(0x5D517471)
+I (../Inc/clarke.h)(0x510A3BB0)
+I (../Inc/smopos.h)(0x5D5429AF)
+I (../Inc/smopos_const.h)(0x5D51A3E4)
+I (../Inc/volt_calc.h)(0x5D51A419)
+I (../Inc/speed_est.h)(0x5D556A9F)
 F (../Src/gpio.c)(0x5D505F4C)(--c99 -c --cpu Cortex-M0 -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F0xx_HAL_Driver/Inc -I ../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_cFOC_ESC_FW-ID:\apps\Keil_v5\ARM\PACK\ARM\CMSIS\5.4.0\CMSIS\Core\Include-ID:\apps\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\2.0.0\Drivers\CMSIS\Device\ST\STM32F0xx\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F070x6 -DUSE_FULL_LL_DRIVER -DSTM32F070x6 -DHSE_VALUE="8000000" -DHSE_STARTUP_TIMEOUT="100" -DLSE_STARTUP_TIMEOUT="5000" -DLSE_VALUE="32768" -DHSI_VALUE="8000000" -DLSI_VALUE="40000" -DVDD_VALUE="3300" -DPREFETCH_ENABLE="1" -DINSTRUCTION_CACHE_ENABLE="0" -DDATA_CACHE_ENABLE="0"-o cfoc_esc_fw\gpio.o --omf_browse cfoc_esc_fw\gpio.crf --depend cfoc_esc_fw\gpio.d)
 I (../Inc/gpio.h)(0x5D505F4C)
 I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_system.h)(0x5BD07AD5)
@@ -116,7 +94,7 @@ I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_utils.h)(0x5BD07AD5)
 I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_pwr.h)(0x5BD07AD5)
 I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_tim.h)(0x5BD07AD5)
 I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_usart.h)(0x5BD07AD5)
-F (../Src/adc.c)(0x5D505F4F)(--c99 -c --cpu Cortex-M0 -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F0xx_HAL_Driver/Inc -I ../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_cFOC_ESC_FW-ID:\apps\Keil_v5\ARM\PACK\ARM\CMSIS\5.4.0\CMSIS\Core\Include-ID:\apps\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\2.0.0\Drivers\CMSIS\Device\ST\STM32F0xx\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F070x6 -DUSE_FULL_LL_DRIVER -DSTM32F070x6 -DHSE_VALUE="8000000" -DHSE_STARTUP_TIMEOUT="100" -DLSE_STARTUP_TIMEOUT="5000" -DLSE_VALUE="32768" -DHSI_VALUE="8000000" -DLSI_VALUE="40000" -DVDD_VALUE="3300" -DPREFETCH_ENABLE="1" -DINSTRUCTION_CACHE_ENABLE="0" -DDATA_CACHE_ENABLE="0"-o cfoc_esc_fw\adc.o --omf_browse cfoc_esc_fw\adc.crf --depend cfoc_esc_fw\adc.d)
+F (../Src/adc.c)(0x5D51571E)(--c99 -c --cpu Cortex-M0 -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F0xx_HAL_Driver/Inc -I ../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_cFOC_ESC_FW-ID:\apps\Keil_v5\ARM\PACK\ARM\CMSIS\5.4.0\CMSIS\Core\Include-ID:\apps\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\2.0.0\Drivers\CMSIS\Device\ST\STM32F0xx\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F070x6 -DUSE_FULL_LL_DRIVER -DSTM32F070x6 -DHSE_VALUE="8000000" -DHSE_STARTUP_TIMEOUT="100" -DLSE_STARTUP_TIMEOUT="5000" -DLSE_VALUE="32768" -DHSI_VALUE="8000000" -DLSI_VALUE="40000" -DVDD_VALUE="3300" -DPREFETCH_ENABLE="1" -DINSTRUCTION_CACHE_ENABLE="0" -DDATA_CACHE_ENABLE="0"-o cfoc_esc_fw\adc.o --omf_browse cfoc_esc_fw\adc.crf --depend cfoc_esc_fw\adc.d)
 I (../Inc/adc.h)(0x5D505F4F)
 I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_adc.h)(0x5BD07AD5)
 I (../Drivers/CMSIS/Device/ST/STM32F0xx/Include/stm32f0xx.h)(0x5BD07AB9)
@@ -220,7 +198,7 @@ I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_pwr.h)(0x5BD07AD5)
 I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_usart.h)(0x5BD07AD5)
 I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_gpio.h)(0x5BD07AD5)
 I (../Inc/gpio.h)(0x5D505F4C)
-F (../Src/usart.c)(0x5D505F50)(--c99 -c --cpu Cortex-M0 -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F0xx_HAL_Driver/Inc -I ../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_cFOC_ESC_FW-ID:\apps\Keil_v5\ARM\PACK\ARM\CMSIS\5.4.0\CMSIS\Core\Include-ID:\apps\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\2.0.0\Drivers\CMSIS\Device\ST\STM32F0xx\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F070x6 -DUSE_FULL_LL_DRIVER -DSTM32F070x6 -DHSE_VALUE="8000000" -DHSE_STARTUP_TIMEOUT="100" -DLSE_STARTUP_TIMEOUT="5000" -DLSE_VALUE="32768" -DHSI_VALUE="8000000" -DLSI_VALUE="40000" -DVDD_VALUE="3300" -DPREFETCH_ENABLE="1" -DINSTRUCTION_CACHE_ENABLE="0" -DDATA_CACHE_ENABLE="0"-o cfoc_esc_fw\usart.o --omf_browse cfoc_esc_fw\usart.crf --depend cfoc_esc_fw\usart.d)
+F (../Src/usart.c)(0x5D516106)(--c99 -c --cpu Cortex-M0 -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F0xx_HAL_Driver/Inc -I ../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_cFOC_ESC_FW-ID:\apps\Keil_v5\ARM\PACK\ARM\CMSIS\5.4.0\CMSIS\Core\Include-ID:\apps\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\2.0.0\Drivers\CMSIS\Device\ST\STM32F0xx\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F070x6 -DUSE_FULL_LL_DRIVER -DSTM32F070x6 -DHSE_VALUE="8000000" -DHSE_STARTUP_TIMEOUT="100" -DLSE_STARTUP_TIMEOUT="5000" -DLSE_VALUE="32768" -DHSI_VALUE="8000000" -DLSI_VALUE="40000" -DVDD_VALUE="3300" -DPREFETCH_ENABLE="1" -DINSTRUCTION_CACHE_ENABLE="0" -DDATA_CACHE_ENABLE="0"-o cfoc_esc_fw\usart.o --omf_browse cfoc_esc_fw\usart.crf --depend cfoc_esc_fw\usart.d)
 I (../Inc/usart.h)(0x5D505F50)
 I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_usart.h)(0x5BD07AD5)
 I (../Drivers/CMSIS/Device/ST/STM32F0xx/Include/stm32f0xx.h)(0x5BD07AB9)
@@ -247,7 +225,7 @@ I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_tim.h)(0x5BD07AD5)
 I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_gpio.h)(0x5BD07AD5)
 I (../Inc/gpio.h)(0x5D505F4C)
 I (../Inc/dma.h)(0x5D505F4F)
-F (../Src/stm32f0xx_it.c)(0x5D506010)(--c99 -c --cpu Cortex-M0 -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F0xx_HAL_Driver/Inc -I ../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_cFOC_ESC_FW-ID:\apps\Keil_v5\ARM\PACK\ARM\CMSIS\5.4.0\CMSIS\Core\Include-ID:\apps\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\2.0.0\Drivers\CMSIS\Device\ST\STM32F0xx\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F070x6 -DUSE_FULL_LL_DRIVER -DSTM32F070x6 -DHSE_VALUE="8000000" -DHSE_STARTUP_TIMEOUT="100" -DLSE_STARTUP_TIMEOUT="5000" -DLSE_VALUE="32768" -DHSI_VALUE="8000000" -DLSI_VALUE="40000" -DVDD_VALUE="3300" -DPREFETCH_ENABLE="1" -DINSTRUCTION_CACHE_ENABLE="0" -DDATA_CACHE_ENABLE="0"-o cfoc_esc_fw\stm32f0xx_it.o --omf_browse cfoc_esc_fw\stm32f0xx_it.crf --depend cfoc_esc_fw\stm32f0xx_it.d)
+F (../Src/stm32f0xx_it.c)(0x5D515F15)(--c99 -c --cpu Cortex-M0 -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F0xx_HAL_Driver/Inc -I ../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_cFOC_ESC_FW-ID:\apps\Keil_v5\ARM\PACK\ARM\CMSIS\5.4.0\CMSIS\Core\Include-ID:\apps\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\2.0.0\Drivers\CMSIS\Device\ST\STM32F0xx\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F070x6 -DUSE_FULL_LL_DRIVER -DSTM32F070x6 -DHSE_VALUE="8000000" -DHSE_STARTUP_TIMEOUT="100" -DLSE_STARTUP_TIMEOUT="5000" -DLSE_VALUE="32768" -DHSI_VALUE="8000000" -DLSI_VALUE="40000" -DVDD_VALUE="3300" -DPREFETCH_ENABLE="1" -DINSTRUCTION_CACHE_ENABLE="0" -DDATA_CACHE_ENABLE="0"-o cfoc_esc_fw\stm32f0xx_it.o --omf_browse cfoc_esc_fw\stm32f0xx_it.crf --depend cfoc_esc_fw\stm32f0xx_it.d)
 I (../Drivers/CMSIS/Device/ST/STM32F0xx/Include/stm32f0xx.h)(0x5BD07AB9)
 I (../Drivers/CMSIS/Device/ST/STM32F0xx/Include/stm32f070x6.h)(0x5BD07AB9)
 I (../Drivers/CMSIS/Include/core_cm0.h)(0x5BD07AD4)
@@ -272,6 +250,163 @@ I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_utils.h)(0x5BD07AD5)
 I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_pwr.h)(0x5BD07AD5)
 I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_tim.h)(0x5BD07AD5)
 I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_usart.h)(0x5BD07AD5)
+F (..\Src\ipark.c)(0x5D516462)(--c99 -c --cpu Cortex-M0 -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F0xx_HAL_Driver/Inc -I ../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_cFOC_ESC_FW-ID:\apps\Keil_v5\ARM\PACK\ARM\CMSIS\5.4.0\CMSIS\Core\Include-ID:\apps\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\2.0.0\Drivers\CMSIS\Device\ST\STM32F0xx\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F070x6 -DUSE_FULL_LL_DRIVER -DSTM32F070x6 -DHSE_VALUE="8000000" -DHSE_STARTUP_TIMEOUT="100" -DLSE_STARTUP_TIMEOUT="5000" -DLSE_VALUE="32768" -DHSI_VALUE="8000000" -DLSI_VALUE="40000" -DVDD_VALUE="3300" -DPREFETCH_ENABLE="1" -DINSTRUCTION_CACHE_ENABLE="0" -DDATA_CACHE_ENABLE="0"-o cfoc_esc_fw\ipark.o --omf_browse cfoc_esc_fw\ipark.crf --depend cfoc_esc_fw\ipark.d)
+I (../Inc/fxptMath.h)(0x5D554B89)
+I (../Inc/main.h)(0x5D505F50)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_adc.h)(0x5BD07AD5)
+I (../Drivers/CMSIS/Device/ST/STM32F0xx/Include/stm32f0xx.h)(0x5BD07AB9)
+I (../Drivers/CMSIS/Device/ST/STM32F0xx/Include/stm32f070x6.h)(0x5BD07AB9)
+I (../Drivers/CMSIS/Include/core_cm0.h)(0x5BD07AD4)
+I (D:\apps\Keil_v5\ARM\ARMCC\include\stdint.h)(0x588BC994)
+I (../Drivers/CMSIS/Include/core_cmInstr.h)(0x5BD07AD4)
+I (../Drivers/CMSIS/Include/cmsis_armcc.h)(0x5BD07AD4)
+I (../Drivers/CMSIS/Include/core_cmFunc.h)(0x5BD07AD4)
+I (../Drivers/CMSIS/Device/ST/STM32F0xx/Include/system_stm32f0xx.h)(0x5BD07AB9)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_dma.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_i2c.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_crs.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_rcc.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_bus.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_system.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_exti.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_cortex.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_utils.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_pwr.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_tim.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_usart.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_gpio.h)(0x5BD07AD5)
+I (../Inc/ipark.h)(0x5D51652C)
+F (..\Src\park.c)(0x5D51B037)(--c99 -c --cpu Cortex-M0 -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F0xx_HAL_Driver/Inc -I ../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_cFOC_ESC_FW-ID:\apps\Keil_v5\ARM\PACK\ARM\CMSIS\5.4.0\CMSIS\Core\Include-ID:\apps\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\2.0.0\Drivers\CMSIS\Device\ST\STM32F0xx\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F070x6 -DUSE_FULL_LL_DRIVER -DSTM32F070x6 -DHSE_VALUE="8000000" -DHSE_STARTUP_TIMEOUT="100" -DLSE_STARTUP_TIMEOUT="5000" -DLSE_VALUE="32768" -DHSI_VALUE="8000000" -DLSI_VALUE="40000" -DVDD_VALUE="3300" -DPREFETCH_ENABLE="1" -DINSTRUCTION_CACHE_ENABLE="0" -DDATA_CACHE_ENABLE="0"-o cfoc_esc_fw\park.o --omf_browse cfoc_esc_fw\park.crf --depend cfoc_esc_fw\park.d)
+I (../Inc/fxptMath.h)(0x5D554B89)
+I (../Inc/main.h)(0x5D505F50)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_adc.h)(0x5BD07AD5)
+I (../Drivers/CMSIS/Device/ST/STM32F0xx/Include/stm32f0xx.h)(0x5BD07AB9)
+I (../Drivers/CMSIS/Device/ST/STM32F0xx/Include/stm32f070x6.h)(0x5BD07AB9)
+I (../Drivers/CMSIS/Include/core_cm0.h)(0x5BD07AD4)
+I (D:\apps\Keil_v5\ARM\ARMCC\include\stdint.h)(0x588BC994)
+I (../Drivers/CMSIS/Include/core_cmInstr.h)(0x5BD07AD4)
+I (../Drivers/CMSIS/Include/cmsis_armcc.h)(0x5BD07AD4)
+I (../Drivers/CMSIS/Include/core_cmFunc.h)(0x5BD07AD4)
+I (../Drivers/CMSIS/Device/ST/STM32F0xx/Include/system_stm32f0xx.h)(0x5BD07AB9)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_dma.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_i2c.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_crs.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_rcc.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_bus.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_system.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_exti.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_cortex.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_utils.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_pwr.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_tim.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_usart.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_gpio.h)(0x5BD07AD5)
+I (../Inc/park.h)(0x5D51B082)
+F (..\Src\pid_reg3.c)(0x5D509216)(--c99 -c --cpu Cortex-M0 -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F0xx_HAL_Driver/Inc -I ../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_cFOC_ESC_FW-ID:\apps\Keil_v5\ARM\PACK\ARM\CMSIS\5.4.0\CMSIS\Core\Include-ID:\apps\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\2.0.0\Drivers\CMSIS\Device\ST\STM32F0xx\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F070x6 -DUSE_FULL_LL_DRIVER -DSTM32F070x6 -DHSE_VALUE="8000000" -DHSE_STARTUP_TIMEOUT="100" -DLSE_STARTUP_TIMEOUT="5000" -DLSE_VALUE="32768" -DHSI_VALUE="8000000" -DLSI_VALUE="40000" -DVDD_VALUE="3300" -DPREFETCH_ENABLE="1" -DINSTRUCTION_CACHE_ENABLE="0" -DDATA_CACHE_ENABLE="0"-o cfoc_esc_fw\pid_reg3.o --omf_browse cfoc_esc_fw\pid_reg3.crf --depend cfoc_esc_fw\pid_reg3.d)
+I (../Inc/fxptMath.h)(0x5D554B89)
+I (../Inc/main.h)(0x5D505F50)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_adc.h)(0x5BD07AD5)
+I (../Drivers/CMSIS/Device/ST/STM32F0xx/Include/stm32f0xx.h)(0x5BD07AB9)
+I (../Drivers/CMSIS/Device/ST/STM32F0xx/Include/stm32f070x6.h)(0x5BD07AB9)
+I (../Drivers/CMSIS/Include/core_cm0.h)(0x5BD07AD4)
+I (D:\apps\Keil_v5\ARM\ARMCC\include\stdint.h)(0x588BC994)
+I (../Drivers/CMSIS/Include/core_cmInstr.h)(0x5BD07AD4)
+I (../Drivers/CMSIS/Include/cmsis_armcc.h)(0x5BD07AD4)
+I (../Drivers/CMSIS/Include/core_cmFunc.h)(0x5BD07AD4)
+I (../Drivers/CMSIS/Device/ST/STM32F0xx/Include/system_stm32f0xx.h)(0x5BD07AB9)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_dma.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_i2c.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_crs.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_rcc.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_bus.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_system.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_exti.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_cortex.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_utils.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_pwr.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_tim.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_usart.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_gpio.h)(0x5BD07AD5)
+I (../Inc/pid_reg3.h)(0x426ECF7C)
+F (..\Src\rampgen.c)(0x5D518A20)(--c99 -c --cpu Cortex-M0 -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F0xx_HAL_Driver/Inc -I ../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_cFOC_ESC_FW-ID:\apps\Keil_v5\ARM\PACK\ARM\CMSIS\5.4.0\CMSIS\Core\Include-ID:\apps\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\2.0.0\Drivers\CMSIS\Device\ST\STM32F0xx\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F070x6 -DUSE_FULL_LL_DRIVER -DSTM32F070x6 -DHSE_VALUE="8000000" -DHSE_STARTUP_TIMEOUT="100" -DLSE_STARTUP_TIMEOUT="5000" -DLSE_VALUE="32768" -DHSI_VALUE="8000000" -DLSI_VALUE="40000" -DVDD_VALUE="3300" -DPREFETCH_ENABLE="1" -DINSTRUCTION_CACHE_ENABLE="0" -DDATA_CACHE_ENABLE="0"-o cfoc_esc_fw\rampgen.o --omf_browse cfoc_esc_fw\rampgen.crf --depend cfoc_esc_fw\rampgen.d)
+I (../Inc/fxptMath.h)(0x5D554B89)
+I (../Inc/main.h)(0x5D505F50)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_adc.h)(0x5BD07AD5)
+I (../Drivers/CMSIS/Device/ST/STM32F0xx/Include/stm32f0xx.h)(0x5BD07AB9)
+I (../Drivers/CMSIS/Device/ST/STM32F0xx/Include/stm32f070x6.h)(0x5BD07AB9)
+I (../Drivers/CMSIS/Include/core_cm0.h)(0x5BD07AD4)
+I (D:\apps\Keil_v5\ARM\ARMCC\include\stdint.h)(0x588BC994)
+I (../Drivers/CMSIS/Include/core_cmInstr.h)(0x5BD07AD4)
+I (../Drivers/CMSIS/Include/cmsis_armcc.h)(0x5BD07AD4)
+I (../Drivers/CMSIS/Include/core_cmFunc.h)(0x5BD07AD4)
+I (../Drivers/CMSIS/Device/ST/STM32F0xx/Include/system_stm32f0xx.h)(0x5BD07AB9)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_dma.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_i2c.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_crs.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_rcc.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_bus.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_system.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_exti.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_cortex.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_utils.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_pwr.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_tim.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_usart.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_gpio.h)(0x5BD07AD5)
+I (../Inc/rampgen.h)(0x5D513437)
+F (..\Src\rmp_cntl.c)(0x5D509266)(--c99 -c --cpu Cortex-M0 -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F0xx_HAL_Driver/Inc -I ../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_cFOC_ESC_FW-ID:\apps\Keil_v5\ARM\PACK\ARM\CMSIS\5.4.0\CMSIS\Core\Include-ID:\apps\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\2.0.0\Drivers\CMSIS\Device\ST\STM32F0xx\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F070x6 -DUSE_FULL_LL_DRIVER -DSTM32F070x6 -DHSE_VALUE="8000000" -DHSE_STARTUP_TIMEOUT="100" -DLSE_STARTUP_TIMEOUT="5000" -DLSE_VALUE="32768" -DHSI_VALUE="8000000" -DLSI_VALUE="40000" -DVDD_VALUE="3300" -DPREFETCH_ENABLE="1" -DINSTRUCTION_CACHE_ENABLE="0" -DDATA_CACHE_ENABLE="0"-o cfoc_esc_fw\rmp_cntl.o --omf_browse cfoc_esc_fw\rmp_cntl.crf --depend cfoc_esc_fw\rmp_cntl.d)
+I (../Inc/fxptMath.h)(0x5D554B89)
+I (../Inc/main.h)(0x5D505F50)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_adc.h)(0x5BD07AD5)
+I (../Drivers/CMSIS/Device/ST/STM32F0xx/Include/stm32f0xx.h)(0x5BD07AB9)
+I (../Drivers/CMSIS/Device/ST/STM32F0xx/Include/stm32f070x6.h)(0x5BD07AB9)
+I (../Drivers/CMSIS/Include/core_cm0.h)(0x5BD07AD4)
+I (D:\apps\Keil_v5\ARM\ARMCC\include\stdint.h)(0x588BC994)
+I (../Drivers/CMSIS/Include/core_cmInstr.h)(0x5BD07AD4)
+I (../Drivers/CMSIS/Include/cmsis_armcc.h)(0x5BD07AD4)
+I (../Drivers/CMSIS/Include/core_cmFunc.h)(0x5BD07AD4)
+I (../Drivers/CMSIS/Device/ST/STM32F0xx/Include/system_stm32f0xx.h)(0x5BD07AB9)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_dma.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_i2c.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_crs.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_rcc.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_bus.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_system.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_exti.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_cortex.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_utils.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_pwr.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_tim.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_usart.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_gpio.h)(0x5BD07AD5)
+I (../Inc/rmp_cntl.h)(0x5D518A20)
+F (..\Src\vhzprof.c)(0x5D5091FD)(--c99 -c --cpu Cortex-M0 -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F0xx_HAL_Driver/Inc -I ../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_cFOC_ESC_FW-ID:\apps\Keil_v5\ARM\PACK\ARM\CMSIS\5.4.0\CMSIS\Core\Include-ID:\apps\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\2.0.0\Drivers\CMSIS\Device\ST\STM32F0xx\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F070x6 -DUSE_FULL_LL_DRIVER -DSTM32F070x6 -DHSE_VALUE="8000000" -DHSE_STARTUP_TIMEOUT="100" -DLSE_STARTUP_TIMEOUT="5000" -DLSE_VALUE="32768" -DHSI_VALUE="8000000" -DLSI_VALUE="40000" -DVDD_VALUE="3300" -DPREFETCH_ENABLE="1" -DINSTRUCTION_CACHE_ENABLE="0" -DDATA_CACHE_ENABLE="0"-o cfoc_esc_fw\vhzprof.o --omf_browse cfoc_esc_fw\vhzprof.crf --depend cfoc_esc_fw\vhzprof.d)
+I (../Inc/fxptMath.h)(0x5D554B89)
+I (../Inc/main.h)(0x5D505F50)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_adc.h)(0x5BD07AD5)
+I (../Drivers/CMSIS/Device/ST/STM32F0xx/Include/stm32f0xx.h)(0x5BD07AB9)
+I (../Drivers/CMSIS/Device/ST/STM32F0xx/Include/stm32f070x6.h)(0x5BD07AB9)
+I (../Drivers/CMSIS/Include/core_cm0.h)(0x5BD07AD4)
+I (D:\apps\Keil_v5\ARM\ARMCC\include\stdint.h)(0x588BC994)
+I (../Drivers/CMSIS/Include/core_cmInstr.h)(0x5BD07AD4)
+I (../Drivers/CMSIS/Include/cmsis_armcc.h)(0x5BD07AD4)
+I (../Drivers/CMSIS/Include/core_cmFunc.h)(0x5BD07AD4)
+I (../Drivers/CMSIS/Device/ST/STM32F0xx/Include/system_stm32f0xx.h)(0x5BD07AB9)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_dma.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_i2c.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_crs.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_rcc.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_bus.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_system.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_exti.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_cortex.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_utils.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_pwr.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_tim.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_usart.h)(0x5BD07AD5)
+I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_gpio.h)(0x5BD07AD5)
+I (../Inc/vhzprof.h)(0x426ECFAE)
+I (D:\apps\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x588BC994)
 F (../Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_ll_gpio.c)(0x5BD07AD6)(--c99 -c --cpu Cortex-M0 -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F0xx_HAL_Driver/Inc -I ../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_cFOC_ESC_FW-ID:\apps\Keil_v5\ARM\PACK\ARM\CMSIS\5.4.0\CMSIS\Core\Include-ID:\apps\Keil_v5\ARM\PACK\Keil\STM32F0xx_DFP\2.0.0\Drivers\CMSIS\Device\ST\STM32F0xx\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F070x6 -DUSE_FULL_LL_DRIVER -DSTM32F070x6 -DHSE_VALUE="8000000" -DHSE_STARTUP_TIMEOUT="100" -DLSE_STARTUP_TIMEOUT="5000" -DLSE_VALUE="32768" -DHSI_VALUE="8000000" -DLSI_VALUE="40000" -DVDD_VALUE="3300" -DPREFETCH_ENABLE="1" -DINSTRUCTION_CACHE_ENABLE="0" -DDATA_CACHE_ENABLE="0"-o cfoc_esc_fw\stm32f0xx_ll_gpio.o --omf_browse cfoc_esc_fw\stm32f0xx_ll_gpio.crf --depend cfoc_esc_fw\stm32f0xx_ll_gpio.d)
 I (../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_ll_gpio.h)(0x5BD07AD5)
 I (../Drivers/CMSIS/Device/ST/STM32F0xx/Include/stm32f0xx.h)(0x5BD07AB9)

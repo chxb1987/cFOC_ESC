@@ -36,7 +36,7 @@ void atan2sqrt(_iq *a, _iq *m, _iq y, _iq x);
 *     Время исполнения ...
 *******************************************************************************/
 
-static inline void CORDICsincos(_iq a, _iq m, _iq *s, _iq *c) {
+__forceinline void CORDICsincos(_iq a, _iq m, _iq *s, _iq *c) {
  _iq k, tx, x=m, y=0, z=a, fl=0;
  if (z>+CORDIC_HALFPI) { fl=+1; z = (+CORDIC_PI) - z; }
  else if (z<-CORDIC_HALFPI) { fl=+1; z = (-CORDIC_PI) - z; }
@@ -58,7 +58,7 @@ static inline void CORDICsincos(_iq a, _iq m, _iq *s, _iq *c) {
 *     Выход: угол 'a' (рад), амплитуда 'm'
 *     Время исполнения ...
 *******************************************************************************/
-static inline void CORDICatan2sqrt(_iq *a, _iq *m, _iq y, _iq x) {
+__forceinline void CORDICatan2sqrt(_iq *a, _iq *m, _iq y, _iq x) {
  _iq k, tx, z=0, fl=0;
  if (x<0) { fl=((y>0)?+1:-1); x=-x; y=-y; }
  for (k=0; k<CORDIC_MAXITER; k++) {

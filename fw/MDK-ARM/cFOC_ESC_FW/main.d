@@ -31,7 +31,13 @@ cfoc_esc_fw\main.o: ../Inc/gpio.h
 cfoc_esc_fw\main.o: ../Inc/fxptMath.h
 cfoc_esc_fw\main.o: ../Inc/cordicTrig.h
 cfoc_esc_fw\main.o: ../Inc/digitalFilters.h
-cfoc_esc_fw\main.o: ../Inc/parameter.h
-cfoc_esc_fw\main.o: ../Inc/bdcm.h
-cfoc_esc_fw\main.o: ../Inc/bdcm_const.h
 cfoc_esc_fw\main.o: ../Inc/pi_reg.h
+cfoc_esc_fw\main.o: ../Inc/rampgen.h
+cfoc_esc_fw\main.o: ../Inc/park.h
+cfoc_esc_fw\main.o: ../Inc/ipark.h
+cfoc_esc_fw\main.o: ../Inc/svgen.h
+cfoc_esc_fw\main.o: ../Inc/clarke.h
+cfoc_esc_fw\main.o: ../Inc/smopos.h
+cfoc_esc_fw\main.o: ../Inc/smopos_const.h
+cfoc_esc_fw\main.o: ../Inc/volt_calc.h
+cfoc_esc_fw\main.o: ../Inc/speed_est.h

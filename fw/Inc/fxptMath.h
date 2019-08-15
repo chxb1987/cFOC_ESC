@@ -66,6 +66,7 @@ typedef volatile int32_t _iq;
 #define _IQ14toIQ(A) ((int32_t) (A) << (GLOBAL_Q - 14))
 #define _IQ15toIQ(A) ((int32_t) (A) << (GLOBAL_Q - 15))
 #define _IQ16toIQ(A) ((int32_t) (A) << (GLOBAL_Q - 16))
+#define _IQ21toIQ(A) ((int32_t) (A) << (GLOBAL_Q - 21))
 
 #define _IQtoIQ8(A) ((int32_t)  (A) >> (GLOBAL_Q - 8))
 #define _IQtoIQ9(A) ((int32_t)  (A) >> (GLOBAL_Q - 9))
@@ -76,6 +77,7 @@ typedef volatile int32_t _iq;
 #define _IQtoIQ14(A) ((int32_t) (A) >> (GLOBAL_Q - 14))
 #define _IQtoIQ15(A) ((int32_t) (A) >> (GLOBAL_Q - 15))
 #define _IQtoIQ16(A) ((int32_t) (A) >> (GLOBAL_Q - 16))
+#define _IQtoIQ21(A) ((int32_t) (A) >> (GLOBAL_Q - 21))
 
 #define _IQdiv2(A)          ((A) >> 1)
 #define _IQdiv4(A)          ((A) >> 2)
@@ -85,6 +87,8 @@ typedef volatile int32_t _iq;
 #define _IQdiv64(A)         ((A) >> 6)
 #define _IQdiv128(A)        ((A) >> 7)
 #define _IQdiv256(A)        ((A) >> 8)
+
+#define _IQmpy2(A)          ((A) << 1)
 
 #define _IQmpy(A, B)        (int32_t) ( ( (int64_t) (A) * (int64_t) (B) ) >> GLOBAL_Q )
 #define _IQmpylp(A, B)      (int32_t) ( ( (A) >> HALF_GLOBAL_Q ) * ( (B) >> HALF_GLOBAL_Q ) )
@@ -103,7 +107,14 @@ typedef volatile int32_t _iq;
 /* Description :  Макрос ограничения числа врхним (u) и нижним (l) пределом
 * Input : x    - число в формате GLOBAL_Q
 */
-#define _IQsat(x, u, l) ( (x > u) ? x = u : (x < l) ? x = l )
+#define _IQsat(A, Pos, Neg)     (((A) > (Pos)) ?                              \
+                                 (Pos) :                                      \
+                                 (((A) < (Neg)) ? (Neg) : (A)))
+
+/* Description :  Макрос взятия абсолютного значения (модуля)
+* Input : x    - число в формате GLOBAL_Q
+*/
+#define _IQabs(x) ( (x < 0) ? x = -x : x )
 
 
 /*******************************************************************************
@@ -120,7 +131,7 @@ typedef volatile int32_t _iq;
 *******************************************************************************/
 _iq _IQsin(_iq VAR);
 
-inline _iq _IQsin(_iq VAR){
+__forceinline _iq _IQsin(_iq VAR){
     VAR = VAR > _IQ(M_PI2) ? -VAR + _IQ(M_PI)
         : VAR < -_IQ(M_PI2) ? -VAR - _IQ(M_PI) : VAR;
     VAR = _IQmpy(VAR, (_IQ(0.98557) - _IQmpy(VAR, _IQmpy(VAR, _IQ(0.142595)))));
@@ -129,7 +140,7 @@ inline _iq _IQsin(_iq VAR){
 
 _iq _IQsinPU(_iq VAR);
 
-inline _iq _IQsinPU(_iq VAR){
+__forceinline _iq _IQsinPU(_iq VAR){
 		VAR *= _IQ(M_PI);
     VAR = VAR > _IQ(M_PI2) ? -VAR + _IQ(M_PI)
         : VAR < -_IQ(M_PI2) ? -VAR - _IQ(M_PI) : VAR;
@@ -156,7 +167,7 @@ inline _iq _IQsinPU(_iq VAR){
 
 _iq _IQcos(_iq VAR);
 
-static inline _iq _IQcos(_iq VAR){
+__forceinline _iq _IQcos(_iq VAR){
     VAR = (VAR > 0 ? -VAR : VAR) + _IQ(M_PI2);
     VAR = _IQmpy(VAR, (_IQ(0.98557) - _IQmpy(VAR, _IQmpy(VAR, _IQ(0.142595)))));
 	return VAR;
@@ -174,7 +185,7 @@ static inline _iq _IQcos(_iq VAR){
 
 _iq _IQdiv14BIT(_iq A, _iq B);
 
-static inline _iq _IQdiv14BIT(_iq A, _iq B)
+__forceinline _iq _IQdiv14BIT(_iq A, _iq B)
 {
     _iq x = A > 0 ? A : -A;
     _iq y = B > 0 ? B : -B;
@@ -229,7 +240,7 @@ static inline _iq _IQdiv14BIT(_iq A, _iq B)
 
 _iq _IQatan(_iq A);
 
-static inline _iq _IQatan(_iq A) {
+__forceinline _iq _IQatan(_iq A) {
     return _IQmpy(A, (_IQ(1.054) - _IQmpy(_IQ(0.265), A))); // 0.42 uS.
 }
 
@@ -245,7 +256,7 @@ static inline _iq _IQatan(_iq A) {
 
 _iq _IQatan2(_iq A, _iq B);
 
-static inline _iq _IQatan2(_iq A, _iq B) {
+__forceinline _iq _IQatan2(_iq A, _iq B) {
     if (A == 0) { return B >= 0 ?          0 : -_IQ(M_PI ); }
     if (B == 0) { return A >  0 ? _IQ(M_PI2) : -_IQ(M_PI2); }
     if (B >  0) {
@@ -281,7 +292,7 @@ static inline _iq _IQatan2(_iq A, _iq B) {
 
 _iq _IQsqrt( _iq v );
 
-static inline _iq _IQsqrt( _iq v ) {
+__forceinline _iq _IQsqrt( _iq v ) {
 	_iq temp, nHat = 0, b = 32768, bshft = 15;
 	do {
 		if (v >= (temp = (((nHat << 1) + b) << bshft--)))
@@ -304,7 +315,7 @@ static inline _iq _IQsqrt( _iq v ) {
 
 _iq _IQmag( _iq x, _iq y );
 
-static inline _iq _IQmag( _iq x, _iq y ){
+__forceinline _iq _IQmag( _iq x, _iq y ){
 	return _IQsqrt( _IQmpy(x, x) + _IQmpy(y, y) );
 }
 	
@@ -320,7 +331,7 @@ static inline _iq _IQmag( _iq x, _iq y ){
 
 _iq _IQisqrt(_iq x);
 
-static inline _iq _IQisqrt(_iq x) {
+__forceinline _iq _IQisqrt(_iq x) {
 	_iq halfx = _IQmpy( _IQ(0.5), x);
 	_iq y = x;
 	_iq i = *(_iq*)&y;

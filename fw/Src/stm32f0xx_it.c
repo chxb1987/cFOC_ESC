@@ -35,7 +35,7 @@
 #include "stm32f0xx_it.h"
 
 /* USER CODE BEGIN 0 */
-void newSample_callback(void);
+__forceinline void newSample_callback(void);
 void txCmplt_callback(void);
 void rxCmplt_callback(void);
 
@@ -133,12 +133,13 @@ void SysTick_Handler(void)
 void DMA1_Channel1_IRQHandler(void)
 {
   /* USER CODE BEGIN DMA1_Channel1_IRQn 0 */
-	if(LL_DMA_IsActiveFlag_TC1(DMA1))
+	if( LL_DMA_IsActiveFlag_TC1(DMA1) )
   {
     LL_DMA_ClearFlag_TC1(DMA1);
 		newSample_callback();
 	}
 	LL_DMA_ClearFlag_HT1(DMA1);
+	LL_DMA_ClearFlag_TE1(DMA1);
 	LL_DMA_ClearFlag_GI1(DMA1);
   /* USER CODE END DMA1_Channel1_IRQn 0 */
   
@@ -157,15 +158,20 @@ void DMA1_Channel4_5_IRQHandler(void)
 	/* Check whether DMA transfer complete caused the DMA interruption */
 	if(LL_DMA_IsActiveFlag_TC4(DMA1))
   {
-    LL_DMA_ClearFlag_GI4(DMA1);
+		LL_DMA_ClearFlag_TC4(DMA1);
+		LL_DMA_ClearFlag_HT4(DMA1);
+		LL_DMA_ClearFlag_TE4(DMA1);
+		 LL_DMA_ClearFlag_GI4(DMA1);
     //txCmplt_callback();
   }
   else if(LL_DMA_IsActiveFlag_TC5(DMA1))
   {
-	  LL_DMA_ClearFlag_GI5(DMA1);
+		LL_DMA_ClearFlag_HT5(DMA1);
+		LL_DMA_ClearFlag_TC5(DMA1);
+		LL_DMA_ClearFlag_TE5(DMA1);
+		LL_DMA_ClearFlag_GI5(DMA1);
     //rxCmplt_callback();
 	}
-	
 
   /* USER CODE END DMA1_Channel4_5_IRQn 0 */
   
@@ -181,24 +187,15 @@ void ADC1_IRQHandler(void)
 {
   /* USER CODE BEGIN ADC1_IRQn 0 */
 	/* Check whether DMA transfer complete caused the DMA interruption */
-//	static uint8_t adcConvCount = 0;
   if(LL_ADC_IsActiveFlag_EOC(ADC1) == 1)
   {
     LL_ADC_ClearFlag_EOC(ADC1);
-		//adcData[adcConvCount] = LL_ADC_REG_ReadConversionData12(ADC1);
-		//adcConvCount++;
   }
 	
 	if(LL_ADC_IsActiveFlag_EOS(ADC1) == 1)
   {
     LL_ADC_ClearFlag_EOS(ADC1);
-//		if(adcConvCount >= 3)
-//		{
-//			adcConvCount = 0;
-//			newSample_callback();
-//		}
   }
-	//LL_GPIO_ResetOutputPin(POWER_STAGE_EN_GPIO_Port, POWER_STAGE_EN_Pin);
   /* USER CODE END ADC1_IRQn 0 */
   /* USER CODE BEGIN ADC1_IRQn 1 */
 
